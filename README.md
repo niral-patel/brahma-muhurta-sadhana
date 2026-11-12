@@ -1,47 +1,60 @@
 # Brahma Muhurta Sadhana
 
-A guided early-morning routine (3:30 AM to 4:30 AM) that walks you step by step through
-exercise, pranayama, meditation and puja, with timers, bells, breathing cues and a wake-up alarm.
+A guided early-morning routine (around 3:30 AM to 4:30 AM) that walks you step by step through
+exercise, pranayama, meditation and puja, with how-to instructions for every step, a wake-up alarm,
+and a Panchang with muhurat times for Dallas, TX.
 
-It is a single web page (`index.html`) with no install, no account and no audio files.
-Every sound is generated in the browser, so it runs the same on Windows, Mac and iPhone.
+**Open the app:** https://niral-patel.github.io/brahma-muhurta-sadhana/
+
+It is a small web app with no account and no audio files. It runs the same on Windows, Mac and iPhone,
+and works offline after the first visit.
 
 This is an extra self-help project, separate from my ML/AI portfolio.
 
-## How to use it
+## Install it as an app
 
 | Device | How |
 |---|---|
-| Windows / Mac | Open `index.html` in Chrome, Edge or Safari. In Chrome or Edge, use **Install** or **Create shortcut** to get an app window. |
-| iPhone | The page has to be hosted (for example with GitHub Pages). Open the link in Safari, then **Share → Add to Home Screen**. It opens full screen like an app. |
+| iPhone | Open the link in **Safari** → **Share** → **Add to Home Screen**. It opens full screen from its icon. |
+| Windows / Mac (Chrome or Edge) | Open the link → **Install** icon in the address bar, or menu → **Save and share** → **Install**. |
+| Mac (Safari) | Open the link → **File** → **Add to Dock**. |
 
-Press **Start**. The app rings a bell, names each step, counts it down and moves to the next one by itself.
+## The four tabs
+
+| Tab | What it shows |
+|---|---|
+| **Today** | The current step with a countdown, how to do it, today's Panchang summary and the alarm |
+| **Routine** | Every step: switch it on or off, set minutes (or rounds), reorder, jump to it |
+| **Panchang** | Tithi, nakshatra, yoga, karana, sunrise, sunset, muhurat and choghadiya for Dallas, any day |
+| **Guide** | Suggestions for keeping the routine, how to do each step, and the weekly meditation plan |
 
 ## The default routine (60 minutes)
 
-| Time | Step | What the app does |
+| Time | Step | Guidance on screen |
 |---|---|---|
-| 3:30 | Wake up and freshen (5 min) | Bell and timer |
-| 3:35 | Walk (5 min) | Bell and timer |
-| 3:40 | Hanuman dand (3 min) | 40 s work / 20 s rest, high and low bells |
-| 3:43 | Push-ups (3 min) | 40 s work / 20 s rest |
-| 3:46 | Plank (2 min) | 45 s hold / 15 s rest |
-| 3:48 | Cold shower (5 min) | Bell and timer |
-| 3:53 | Kapalbhati (5 min) | One tick per second for 45 s, then 15 s rest |
-| 3:58 | Anulom Vilom (5 min) | Rising tone = inhale (4 s), falling tone = exhale (8 s), left/right cues |
-| 4:03 | Bhramari (3 min) | Inhale tone, then a humming sound to hum along with |
-| 4:06 | Ujjayi (3 min) | Ocean-wave sound for each inhale and exhale |
-| 4:09 | Meditation (12 min) | A drone in the pitch of the day, soft bell every 5 minutes |
-| 4:21 | Puja (9 min) | Bell and timer, three bells at the end |
+| 3:30 | Wake up and freshen (4 min) | Countdown |
+| 3:34 | Walk (4 min) | Countdown |
+| 3:38 | Surya Namaskar (4 rounds) | 12 postures listed; tap **Round done** after each round |
+| 3:44 | Hanuman dand (3 min) | 40 s work / 20 s rest |
+| 3:47 | Push-ups (3 min) | 40 s work / 20 s rest |
+| 3:50 | Plank (2 min) | 45 s hold / 15 s rest |
+| 3:52 | Cold shower (4 min) | Countdown |
+| 3:56 | Kapalbhati (5 min) | Stroke counter, one per second, 45 s on / 15 s rest |
+| 4:01 | Anulom Vilom (5 min) | Left/right cues; the circle grows on inhale (4) and shrinks on exhale (8) |
+| 4:06 | Bhramari (3 min) | Inhale 4, hum 8 |
+| 4:09 | Ujjayi (3 min) | Inhale 5, exhale 5 |
+| 4:12 | Meditation (10 min) | Opening bell, a drone in the pitch of the day, soft bell every 5 minutes, closing bell |
+| 4:22 | Puja (8 min) | Countdown |
 
-Surya Namaskar, Bhastrika and Sheetali are included but switched off. Tick them to add them.
+Bhastrika, Sheetali, Shavasana and Japa are included but switched off. Tick them in **Routine** to add them.
+Surya Namaskar is counted in rounds, not minutes; change the number of rounds in **Routine**.
 
-You can change every step: switch it on or off, set the minutes, move it up or down, or tap its name to jump to it.
-Your changes are saved on that device.
+## Sound
+
+Only two things make sound: the **wake-up alarm** and the **meditation** (bells and drone).
+Every other step is silent and guided on screen. There is no voice.
 
 ## Meditation through the week
-
-Each day has a different focus area, technique, mantra and drone pitch.
 
 | Day | Focus | Technique | Mantra |
 |---|---|---|---|
@@ -52,6 +65,16 @@ Each day has a different focus area, technique, mantra and drone pitch.
 | Fri | Vishuddha, throat | Om chanting | Ham |
 | Sat | Ajna, between the eyebrows | Dharana (one-point focus) | Om |
 | Sun | Sahasrara, crown | Open awareness | silent Om |
+
+## Panchang and muhurat
+
+Calculated on the device for **Dallas, TX** (32.78° N, 96.80° W) in Central time, using the
+[astronomy-engine](https://github.com/cosinekitty/astronomy) library and the same method as my
+Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise.
+
+It shows the month and Vikram Samvat, paksha, tithi, nakshatra, yoga, karana, sunrise and sunset,
+Brahma muhurta, Abhijit muhurta, Rahu kaal, Yamaganda, Gulika kaal and the day and night choghadiya.
+Times can differ by a minute or two from printed panchangs. Festivals are not listed.
 
 ## The alarm, and its limit
 
@@ -68,4 +91,9 @@ that makes you dizzy and breathe normally. This app is a timer and guide, not me
 
 ## Files
 
-- `index.html`: the whole app (HTML, CSS and JavaScript in one file).
+| File | Purpose |
+|---|---|
+| `index.html` | The whole app: layout, styles and logic |
+| `astronomy.js` | astronomy-engine 2.1.19 (MIT), sun and moon positions for the Panchang |
+| `sw.js` | Service worker that caches the app for offline use |
+| `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` | Install-as-app details and icons |

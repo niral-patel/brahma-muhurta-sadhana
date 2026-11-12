@@ -1,0 +1,16 @@
+{
+  "name": "Brahma Muhurta Sadhana",
+  "short_name": "Sadhana",
+  "description": "Guided early-morning routine: exercise, pranayama, meditation and puja, with a Dallas Panchang",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#14122b",
+  "theme_color": "#14122b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
