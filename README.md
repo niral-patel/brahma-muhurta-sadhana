@@ -26,7 +26,7 @@ This is an extra self-help project, separate from my ML/AI portfolio.
 |---|---|
 | **Today** | The current step with a countdown, how to do it, its shlokas, today's Panchang summary and the alarm |
 | **Routine** | Every step: switch it on or off, set minutes (or rounds / malas), reorder, jump to it |
-| **Panchang** | Location, festival, tithi, nakshatra, yoga, karana, sunrise, sunset, muhurat, choghadiya and coming festivals |
+| **Panchang** | Location, month calendar with tithi and festivals, this month's festival list, tithi, nakshatra, yoga, karana, sunrise, sunset, muhurat, choghadiya and coming festivals |
 | **Guide** | Suggestions, how to do each step with shlokas (Gujarati or Devanagari script), weekly meditation plan |
 | **Progress** | Streak, year calendar, yearly totals, book list and tracker, backup |
 

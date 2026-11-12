@@ -25,7 +25,7 @@ img{max-width:100%}
 :root{
   --bg:#14122b; --surface:#1d1a3c; --raised:#27234d; --line:#38336a;
   --fg:#f0ecfa; --muted:#aaa4cc; --accent:#f5a623; --accent-ink:#2b1a00; --dawn:#ee8a9a;
-  --good:#7fd694; --bad:#ff9a9a;
+  --good:#7fd694; --bad:#ff9a9a; --info:#8fb8ff; --sel:#4a3d14;
   --display:"Yatra One","Mukta","Mukta Vaani",system-ui,sans-serif;
   --body:"Mukta","Mukta Vaani",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:dark;
@@ -34,14 +34,14 @@ img{max-width:100%}
   :root:not([data-theme="dark"]){
     --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
     --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
-    --good:#1c7a3b; --bad:#b3261e;
+    --good:#1c7a3b; --bad:#b3261e; --info:#1f5fbf; --sel:#fff3c4;
     color-scheme:light;
   }
 }
 :root[data-theme="light"]{
   --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
   --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
-  --good:#1c7a3b; --bad:#b3261e;
+  --good:#1c7a3b; --bad:#b3261e; --info:#1f5fbf; --sel:#fff3c4;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -136,6 +136,29 @@ ol.steps li.cur .nm b{color:var(--accent)}
 .citylist{display:flex;flex-direction:column;max-height:260px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
 .citylist button{border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;text-align:left;padding:8px 12px}
 .citylist button small{color:var(--muted)}
+
+/* month calendar */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cal .wh{background:var(--raised);text-align:center;font-size:.78rem;font-weight:700;padding:5px 0}
+.cal .wh.sun{color:var(--bad)}
+.cell{background:var(--surface);border:0;border-radius:0;min-height:68px;padding:4px 4px 3px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:0;overflow:hidden}
+.cell:focus-visible{outline-offset:-2px}
+.cell .d{font-weight:700;font-size:1rem;line-height:1.2}
+.cell .t{font-size:.68rem;color:var(--muted);line-height:1.2}
+.cell .f{font-size:.66rem;font-weight:700;line-height:1.2;color:var(--info);overflow-wrap:anywhere}
+.cell .f.major{color:var(--accent)}
+.cell.red .d{color:var(--bad)}
+.cell.out{background:var(--bg)}
+.cell.out .d,.cell.out .t,.cell.out .f{opacity:.55}
+.cell.today{box-shadow:inset 0 0 0 2px var(--good)}
+.cell.sel{background:var(--sel)}
+.seg.wide{display:flex}
+.seg.wide button{flex:1 1 0;min-width:0}
+.mrow{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line);border-radius:0;background:none;padding:9px 0}
+.mrow .chipd{flex:none;width:46px;text-align:center;border-radius:8px;padding:3px 0;background:var(--raised);font-size:.8rem;line-height:1.25;font-weight:700}
+.mrow.major .chipd{background:var(--accent);color:var(--accent-ink)}
+.mrow.major b{color:var(--accent)}
+.mrow small{display:block;color:var(--muted)}
 
 /* guide + progress */
 .guide ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:75ch}
@@ -270,12 +293,18 @@ textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;
     </section>
     <section class="panel">
       <div class="row between">
-        <button id="pPrev" type="button" class="small" aria-label="Previous day">◀</button>
-        <div style="text-align:center;min-width:0"><h3 id="pTitle"></h3><span class="status" id="pSub"></span></div>
-        <button id="pNext" type="button" class="small" aria-label="Next day">▶</button>
+        <button id="pPrev" type="button" aria-label="Previous month">◀</button>
+        <div style="text-align:center;min-width:0"><h3 id="calTitle"></h3><span class="status" id="calSub"></span></div>
+        <button id="pNext" type="button" aria-label="Next month">▶</button>
       </div>
       <div class="row center"><button id="pToday" type="button" class="small">આજે · Today</button></div>
-      <div id="pBody"></div>
+      <div class="cal" id="cal"></div>
+      <div class="seg wide" id="pSeg">
+        <button type="button" data-seg="day">પસંદ કરેલો દિવસ<br>Selected day</button>
+        <button type="button" data-seg="month">આ મહિનાના તહેવારો<br>This month's festivals</button>
+      </div>
+      <div id="pDay"><h3 id="pTitle"></h3><p class="status" id="pSub"></p><div id="pBody"></div></div>
+      <div id="pMonth" hidden></div>
       <p class="note">Calculated on this device for the location above, with the same method as the Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise. Times can differ by a minute or two from printed panchangs. Festival dates follow the Gujarati calendar and the local sunrise, so outside India a few can fall a day apart from the date in India.</p>
     </section>
   </section>
@@ -845,24 +874,62 @@ const PZ=(()=>{
       sunrise:rise,sunset:set,brahma:brahma(dn),abhijit:[noon-mu/2,noon+mu/2],
       rahu:span(rise,set,PD.RAHU[w]),yama:span(rise,set,PD.YAMA[w]),gulika:span(rise,set,PD.GULIKA[w]),chog,festivals:festivals(dn)};
   }
+  function summary(dn){
+    const [t,mi,adhik]=tm(dn,'sunrise');
+    return {t,mi,adhik,masa:PD.MASA[mi],short:t===15?'પૂનમ':t===30?'અમાસ':t<15?'સુદ '+t:'વદ '+(t-15),festivals:festivals(dn)};
+  }
   function upcoming(max,days){
     const t0=dnOf(Date.now());return memo('u'+t0,()=>{const out=[];for(let d=t0+1;out.length<max&&d<=t0+days;d++){const f=festivals(d);if(f.length)out.push([d,f]);}return out;});
   }
-  return {setLoc,dnOf,fmt,fmtd,label,details,brahma,festivals,upcoming,today:()=>dnOf(Date.now()),tz:()=>L.tz};
+  return {setLoc,dnOf,fmt,fmtd,label,details,brahma,festivals,upcoming,summary,ymd,wd,today:()=>dnOf(Date.now()),tz:()=>L.tz};
 })();
 PZ.setLoc(S.loc);
 const ready=()=>typeof Astronomy!=='undefined'&&typeof PD!=='undefined';
 const bi=p=>p[0]+' ('+p[1]+')';
-let pdn=null;
+const GU_MONTHS=['જાન્યુઆરી','ફેબ્રુઆરી','માર્ચ','એપ્રિલ','મે','જૂન','જુલાઈ','ઑગસ્ટ','સપ્ટેમ્બર','ઑક્ટોબર','નવેમ્બર','ડિસેમ્બર'];
+const GU_WD=['રવિ','સોમ','મંગળ','બુધ','ગુરુ','શુક્ર','શનિ'];       // Sunday first
+let pdn=null,calY=0,calM=0;
+function drawCal(){
+  const first=Math.floor(Date.UTC(calY,calM-1,1)/864e5),start=first-((PZ.wd(first)+1)%7),tdn=PZ.today(),masas=[],mf=[];
+  let h=GU_WD.map((w,i)=>'<div class="wh'+(i?'':' sun')+'">'+w+'</div>').join('');
+  for(let i=0;i<42;i++){
+    const dn=start+i,[,m,d]=PZ.ymd(dn),inside=m===calM,s=PZ.summary(dn),major=s.festivals.some(f=>f[2]),f=s.festivals[0];
+    if(inside){const nm=s.masa[0]+(s.adhik?' (અધિક)':'');if(!masas.includes(nm))masas.push(nm);s.festivals.forEach(q=>mf.push([dn,q]));}
+    h+='<button type="button" class="cell'+(inside?'':' out')+(dn===tdn?' today':'')+(dn===pdn?' sel':'')+(PZ.wd(dn)===6||major?' red':'')+'" data-dn="'+dn+'"><span class="d">'+d+'</span><span class="t">'+s.short+'</span>'+(f?'<span class="f'+(major?' major':'')+'">'+esc(f[0])+'</span>':'')+'</button>';
+  }
+  $('cal').innerHTML=h;
+  const s1=PZ.summary(first);
+  $('calTitle').textContent=GU_MONTHS[calM-1]+' '+calY+' · '+new Date(Date.UTC(calY,calM-1,1)).toLocaleDateString('en-US',{timeZone:'UTC',month:'long'});
+  $('calSub').textContent=masas.join(' / ')+' · વિ.સં. '+(s1.mi>=7&&calM>=9?calY+57:calY+56);
+  const list=mf.filter(([,f])=>f[1]!=='Pradosh');
+  $('pMonth').innerHTML=list.length?list.map(([dn,f])=>{
+    const [,,d]=PZ.ymd(dn),left=dn-tdn;
+    return '<button type="button" class="mrow'+(f[2]?' major':'')+'" data-dn="'+dn+'"><span class="chipd">'+d+'<br>'+GU_WD[(PZ.wd(dn)+1)%7]+'</span><span><b>'+esc(f[0])+'</b><small>'+esc(f[1])+(left===0?' · આજે Today':left>0?' · '+left+' દિવસ બાકી ('+left+' days left)':'')+'</small></span></button>';
+  }).join(''):'<p class="note">આ મહિનામાં કોઈ તહેવાર નથી. No festivals this month.</p>';
+}
+function setSeg(v){
+  document.querySelectorAll('#pSeg button').forEach(b=>b.classList.toggle('on',b.dataset.seg===v));
+  $('pDay').hidden=v!=='day';$('pMonth').hidden=v!=='month';
+}
+function selectDay(dn){
+  pdn=dn;[calY,calM]=PZ.ymd(dn);setSeg('day');drawPanchang();
+  try{$('pDay').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}
+}
+function shiftMonth(n){
+  if(!ready()||!calY)return;
+  const m=calM-1+n;calY+=Math.floor(m/12);calM=((m%12)+12)%12+1;
+  try{drawCal();}catch(e){}
+}
 function drawPanchang(){
   const box=$('pBody');
   $('locName').textContent=S.loc.name+(S.loc.live?' (live)':'');
-  $('pSub').textContent=S.loc.name.split(',')[0]+' · '+PZ.tz().replace(/_/g,' ');
-  if(!ready()){box.innerHTML='<p class="note">The Panchang needs an internet connection the first time, to load its data.</p>';return;}
-  if(pdn==null)pdn=PZ.today();
-  $('pTitle').textContent=PZ.label(pdn,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  if(!ready()){$('cal').innerHTML='';box.innerHTML='<p class="note">The Panchang needs an internet connection the first time, to load its data.</p>';return;}
+  if(pdn==null){pdn=PZ.today();[calY,calM]=PZ.ymd(pdn);}
+  try{drawCal();}catch(e){$('cal').innerHTML='';}
   try{
-    const x=PZ.details(pdn),now=Date.now();
+    const x=PZ.details(pdn),now=Date.now(),[py,pm,pd]=PZ.ymd(pdn);
+    $('pTitle').textContent=x.vara[0]+', '+pd+' '+GU_MONTHS[pm-1]+' '+py;
+    $('pSub').textContent=x.short[0]+' · વિક્રમ સંવત '+x.samvat+' · '+x.short[1]+' · '+S.loc.name.split(',')[0]+' ('+PZ.tz().replace(/_/g,' ')+')';
     const row=(k,v,c)=>'<div class="prow"><span class="k">'+k+'</span><span class="v '+(c||'')+'">'+v+'</span></div>';
     const list=a=>a.map(([n,end])=>bi(n)+(end?' until '+PZ.fmtd(end,pdn):'')).join('<br>');
     const rng=([a,b])=>PZ.fmt(a)+' – '+PZ.fmt(b);
@@ -899,9 +966,13 @@ function drawStrip(){
   }catch(e){el.innerHTML='<span>Panchang unavailable for this location.</span>';}
 }
 $('strip').onclick=()=>show('panchang');
-$('pPrev').onclick=()=>{pdn--;drawPanchang();};
-$('pNext').onclick=()=>{pdn++;drawPanchang();};
-$('pToday').onclick=()=>{pdn=null;drawPanchang();};
+$('pPrev').onclick=()=>shiftMonth(-1);
+$('pNext').onclick=()=>shiftMonth(1);
+$('pToday').onclick=()=>{pdn=null;setSeg('day');drawPanchang();};
+$('cal').onclick=e=>{const b=e.target.closest('button');if(b)selectDay(+b.dataset.dn);};
+$('pMonth').onclick=e=>{const b=e.target.closest('button');if(b)selectDay(+b.dataset.dn);};
+$('pSeg').onclick=e=>{const b=e.target.closest('button');if(b)setSeg(b.dataset.seg);};
+setSeg('day');
 
 /* ---------- location: live position, or country > state > city ---------- */
 let CITY=null,locRows=[];
