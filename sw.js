@@ -1,5 +1,5 @@
 // Offline support: the app files are cached, answered from cache at once and refreshed in the background.
-const VERSION = "bms-v4";
+const VERSION = "bms-v5";
 const SHELL = ["./", "index.html", "astronomy.js", "panchang-data.js", "cities.json", "manifest.webmanifest", "apple-touch-icon.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {

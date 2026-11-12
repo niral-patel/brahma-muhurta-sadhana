@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sadhana">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#14122b">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#cf5d09">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -21,34 +21,22 @@ img{max-width:100%}
 <title>Brahma Muhurta Sadhana</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&family=Mukta+Vaani:wght@400;500;700&family=Yatra+One&display=swap">
 <style>
-/* Layout: pre-dawn sky. Five views behind a bottom tab bar (Today, Routine, Panchang, Guide, Progress); Today is the guided "now" panel plus alarm. */
+/* Layout: saffron morning. A saffron title band, white cards on a warm ground; five views behind a bottom tab bar. One light look by design, no dark theme. */
 :root{
-  --bg:#14122b; --surface:#1d1a3c; --raised:#27234d; --line:#38336a;
-  --fg:#f0ecfa; --muted:#aaa4cc; --accent:#f5a623; --accent-ink:#2b1a00; --dawn:#ee8a9a;
-  --good:#7fd694; --bad:#ff9a9a; --info:#8fb8ff; --sel:#4a3d14;
+  --bg:#fff5e6; --surface:#ffffff; --raised:#ffe8c7; --line:#f0d5a8;
+  --fg:#3a2010; --muted:#85644a; --accent:#d9650b; --accent-ink:#ffffff; --dawn:#a8322a;
+  --good:#2f7d32; --bad:#c62828; --info:#1c5fb8; --us:#00796b; --sel:#ffdf9e;
+  --band:#cf5d09; --band2:#e27a14; --band-ink:#ffffff;
   --display:"Yatra One","Mukta","Mukta Vaani",system-ui,sans-serif;
   --body:"Mukta","Mukta Vaani",system-ui,-apple-system,"Segoe UI",sans-serif;
-  color-scheme:dark;
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
-    --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
-    --good:#1c7a3b; --bad:#b3261e; --info:#1f5fbf; --sel:#fff3c4;
-    color-scheme:light;
-  }
-}
-:root[data-theme="light"]{
-  --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
-  --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
-  --good:#1c7a3b; --bad:#b3261e; --info:#1f5fbf; --sel:#fff3c4;
   color-scheme:light;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 104px}
 .wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;background:linear-gradient(120deg,var(--band),var(--band2));color:var(--band-ink);border-radius:14px;padding:14px 18px}
+header .sub{color:var(--band-ink)}
 h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.15;margin:0;text-wrap:balance}
 h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700;margin:0}
 h3{font-size:1.05rem;margin:0}
@@ -160,6 +148,14 @@ ol.steps li.cur .nm b{color:var(--accent)}
 .mrow.major b{color:var(--accent)}
 .mrow small{display:block;color:var(--muted)}
 
+.cell .f.us{color:var(--us)}
+.fest .why{margin:4px 0 0;max-width:70ch}
+.fest.us b{color:var(--us)}
+#ekaPanel.soon{border-color:var(--accent);background:var(--raised)}
+#ekaBody{display:flex;flex-direction:column;gap:6px}
+#ekaBody p{margin:0}
+.ekaname{font-size:1.15rem}
+
 /* guide + progress */
 .guide ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:75ch}
 details{border-top:1px solid var(--line);padding:9px 0}
@@ -237,6 +233,11 @@ textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;
 
       <div class="col">
         <button class="strip" id="strip" type="button" title="Open the Panchang"><span>Calculating the Panchang…</span></button>
+
+        <section class="panel" id="ekaPanel" hidden>
+          <h2>Next Ekadashi fast · એકાદશી વ્રત</h2>
+          <div id="ekaBody"></div>
+        </section>
 
         <section class="panel" id="alarmPanel">
           <h2>Wake-up alarm · એલાર્મ</h2>
@@ -767,6 +768,141 @@ $('how').addEventListener('click',e=>{
   setPage(e.target.dataset.book,parseInt($('readPg').value)||0);$('readOk').textContent='Saved.';
 });
 
+/* ---------- festival knowledge: Ekadashi names, what each day means, US days ---------- */
+// key = masa index (0 Chaitra ... 11 Fagan, Gujarati amanta months) + s (sud) or v (vad); as / av = adhik month
+const EKA={
+ '0s':['કામદા','Kamada','Kamada means the one that fulfils wishes. It is the first Ekadashi of the Hindu year and is said to grant rightful desires and free a person from the weight of past wrongs.'],
+ '0v':['વરુથિની','Varuthini','Varuthini means protected, as if by armour. The fast is said to guard a person from harm and bring good fortune, with merit equal to long austerity.'],
+ '1s':['મોહિની','Mohini','Named after Mohini, the form Vishnu took to protect the nectar. The fast is said to free the mind from attachment and delusion (moha).'],
+ '1v':['અપરા','Apara','Apara means limitless. The fast is said to bring unlimited merit and good name, and to lift the guilt of past mistakes.'],
+ '2s':['નિર્જળા (ભીમ)','Nirjala (Bhim Agiyaras)','The strictest Ekadashi: kept without food or water. Bhima observed it, and it is said to carry the merit of all 24 Ekadashis of the year. Drink water if your health needs it.'],
+ '2v':['યોગિની','Yogini','The fast is said to relieve illness, especially of the skin, and to restore health, as in the story of the gardener Hemamali who was cured of leprosy.'],
+ '3s':['દેવશયની (દેવપોઢી)','Devshayani','Lord Vishnu begins his four months of yogic sleep and Chaturmas starts. People take vows for the four months; weddings and other auspicious ceremonies pause until Dev Uthi Ekadashi.'],
+ '3v':['કામિકા','Kamika','Worship of Vishnu with tulsi leaves on this day is specially praised. The fast is said to give the merit of a pilgrimage and to remove fear.'],
+ '4s':['પુત્રદા (પવિત્રા)','Putrada (Pavitra)','Putrada means giver of children. Couples keep it for the blessing of a child and for the wellbeing of their children.'],
+ '4v':['અજા','Aja','King Harishchandra kept this fast and regained his kingdom, wife and son. It is said to remove sorrow and restore what was lost.'],
+ '5s':['પરિવર્તિની (જળઝીલણી)','Parivartini (Jal Jhilani)','Vishnu turns onto his other side in his sleep. Lord Vamana is worshipped, and in Gujarat the deities are taken for a boat ride (Jal Jhilani). It is said to bring prosperity.'],
+ '5v':['ઇન્દિરા','Indira','This Ekadashi falls in Pitru Paksha. Its merit is offered to one\'s ancestors for their peace and upliftment.'],
+ '6s':['પાશાંકુશા','Papankusha','The name means the goad that holds back sin. Vishnu is worshipped as Padmanabha, and the fast is said to bring health, wealth and freedom from the fear of Yama.'],
+ '6v':['રમા','Rama','Named after Rama, a name of Goddess Lakshmi. It comes just before Diwali and is said to bring prosperity and wash away past wrongs.'],
+ '7s':['દેવઊઠી','Dev Uthi (Prabodhini)','Lord Vishnu wakes from his four-month sleep and Chaturmas ends. Weddings and other auspicious ceremonies begin again; Tulsi Vivah follows the next day.'],
+ '7v':['ઉત્પત્તિ','Utpanna','Marks the birth of Ekadashi Devi, who arose from Vishnu to defeat the demon Mura. It is the traditional day to begin the yearly Ekadashi vow.'],
+ '8s':['મોક્ષદા','Mokshada','Mokshada means giver of liberation. It is also Gita Jayanti, the day Krishna spoke the Bhagavad Gita, so reading the Gita is specially recommended.'],
+ '8v':['સફલા','Saphala','Saphala means fruitful. The fast is said to bring success to honest efforts and to turn bad fortune around.'],
+ '9s':['પુત્રદા','Pausha Putrada','Kept for the blessing of children and for their long life and good character.'],
+ '9v':['ષટ્તિલા','Shattila','Shat-tila means six uses of sesame: bathing with it, applying it, offering it in the fire, giving it in charity, eating it and offering it in water. Giving food and sesame on this day is said to remove poverty.'],
+ '10s':['જયા','Jaya','Jaya means victory. The fast is said to free a person from heavy burdens of the past and from fear.'],
+ '10v':['વિજયા','Vijaya','Lord Rama is said to have kept this fast before crossing the sea to Lanka. It is observed for success in a difficult task.'],
+ '11s':['આમલકી','Amalaki','The amla tree, dear to Vishnu, is worshipped. The fast is said to bring health and prosperity.'],
+ '11v':['પાપમોચની','Papmochani','The last Ekadashi of the Hindu year. The name means the one that frees from sin, a day to let go of past mistakes before the new year.'],
+ 'as':['પદ્મિની','Padmini (Adhik month)','Comes only in the extra (adhik) month, about once in three years. Fasting in Purushottam month is said to carry many times the usual merit.'],
+ 'av':['પરમા','Parama (Adhik month)','Comes only in the extra (adhik) month, about once in three years. It is said to remove poverty and grant the highest blessing.']
+};
+const EKA_HOW='How to fast: avoid grains, rice and beans. Fruit, milk, nuts and root vegetables are the usual farali food. Give extra time to the name of Vishnu or Rama.';
+const INFO={
+ 'Pradosh':'Pradosh Vrat comes on Trayodashi, the 13th tithi, twice a month. It is a fast for Lord Shiva. Worship is done in the pradosh time, about an hour and a half around sunset, with water, milk and bilva leaves offered to the Shiva linga.',
+ 'Sankashti Chaturthi':'The 4th tithi after each full moon, sacred to Lord Ganesha as the remover of troubles (sankat). People fast through the day and eat only after seeing the moon and praying to Ganesha at night.',
+ 'Purnima':'Full moon day. A day for Satyanarayan katha, charity and fasting; many people keep a fast and eat after moonrise.',
+ 'Amavasya':'New moon day. A day to remember ancestors with tarpan, offerings and charity. Many people avoid starting new work on this day.',
+ 'Ekadashi':'The 11th tithi of each fortnight, sacred to Lord Vishnu. '+EKA_HOW,
+ 'Chaitra Navratri begins / Gudi Padwa':'First day of the month of Chaitra. Nine nights of worship of the Goddess begin, ending on Ram Navami. It is the new year in Maharashtra (Gudi Padwa) and several other regions.',
+ 'Cheti Chand':'Sindhi new year and the birthday of Jhulelal, the patron saint of the Sindhi community.',
+ 'Ram Navami':'Birthday of Lord Rama, born at midday on the ninth day of Chaitra. People fast, read the Ramayana and celebrate the birth at noon.',
+ 'Hanuman Jayanti':'Birthday of Hanuman, on the full moon of Chaitra. Devotees visit Hanuman temples and recite the Hanuman Chalisa and Sundarkand.',
+ 'Akshaya Tritiya':'Akshaya means never diminishing. Good deeds, charity and new beginnings on this day are believed to bring lasting results; many people buy gold.',
+ 'Buddha Purnima':'Marks the birth, enlightenment and passing of Gautama Buddha, on the full moon of Vaishakh.',
+ 'Vat Purnima':'Married women fast and tie threads around a banyan (vat) tree, praying for their husband\'s long life. It recalls Savitri, who won Satyavan back from Yama.',
+ 'Rath Yatra':'Chariot festival of Lord Jagannath with Balabhadra and Subhadra. The Ahmedabad and Puri processions are the best known.',
+ 'Guru Purnima':'A day to honour one\'s guru and teachers. It is also the birthday of sage Vyasa, author of the Mahabharata.',
+ 'Raksha Bandhan':'Sisters tie a rakhi on their brother\'s wrist and pray for his wellbeing; brothers give gifts and promise protection.',
+ 'Nag Panchami':'Worship of the serpent deities with milk and prayers for the protection of the family.',
+ 'Randhan Chhath':'The day before Shitala Satam. All the food for the next day is cooked today, because the stove is not lit on Satam.',
+ 'Shitala Satam':'Worship of Goddess Shitala for the health of children. The stove is not lit; the family eats cold food cooked the day before.',
+ 'Janmashtami':'Birthday of Lord Krishna, born at midnight. People fast through the day, sing bhajans and celebrate the birth at midnight.',
+ 'Ganesh Chaturthi':'Birthday of Lord Ganesha. Ganesha murtis are installed at home and in pandals and worshipped for up to ten days, ending on Anant Chaturdashi.',
+ 'Rishi Panchami':'A day to honour the seven great sages (Saptarishi). Traditionally a fast observed mainly by women.',
+ 'Anant Chaturdashi':'Worship of Lord Vishnu as Ananta, the infinite. It is also the day of Ganesh visarjan, when the Ganesha murtis are immersed.',
+ 'Pitru Paksha begins':'Start of the fortnight for ancestors. Shraddha and tarpan are offered on the tithi on which each ancestor passed away. New ventures are usually avoided.',
+ 'Sarva Pitru Amavasya':'Last day of Pitru Paksha. Shraddha can be done today for all ancestors, including those whose tithi is not known.',
+ 'Navratri begins':'Nine nights of worship of Goddess Durga begin with ghatasthapana. In Gujarat they are celebrated with garba and dandiya every night.',
+ 'Durga Ashtami':'Eighth day of Navratri and one of its most important. Havan and kanya pujan are done, and many families worship their kuldevi.',
+ 'Dussehra':'Vijayadashami: Rama\'s victory over Ravana and Durga\'s victory over Mahishasura. A very auspicious day to start anything new; in Gujarat people eat fafda and jalebi.',
+ 'Sharad Purnima':'The full moon of Aso, said to be the brightest of the year. Dudh-pauva (milk with flattened rice) is kept in the moonlight and then eaten.',
+ 'Karva Chauth':'Married women, mainly in North India, fast from sunrise until they see the moon, praying for their husband\'s long life.',
+ 'Vagh Baras':'The Diwali days begin in Gujarat. Cows and calves are worshipped (Govatsa Dwadashi) and traders close the old year\'s account books.',
+ 'Dhanteras':'Worship of Goddess Lakshmi and Lord Dhanvantari. People buy gold, silver or new utensils and light the first Diwali lamps.',
+ 'Kali Chaudas':'Also called Narak Chaturdashi. Hanuman and Mahakali are worshipped to remove negativity and fear; in Gujarat fried vada are made and offered at the crossroads.',
+ 'Diwali':'Festival of lights on the new moon of Aso. Lakshmi puja and Chopda pujan, the blessing of the new account books, are done in the evening, and homes are lit with diyas.',
+ 'Gujarati New Year':'Bestu Varas, the first day of Kartak and of the new Vikram Samvat year. People greet each other with Saal Mubarak and visit temples and elders. Govardhan puja and Annakut are also today.',
+ 'Bhai Bij':'Sisters invite their brothers for a meal, apply a tilak and pray for their long life. It recalls Yama visiting his sister Yamuna.',
+ 'Labh Pancham':'Last day of the Diwali festival in Gujarat. Shops and businesses reopen and start the new year\'s accounts on this auspicious day.',
+ 'Tulsi Vivah':'The ceremonial wedding of the Tulsi plant with Lord Vishnu as Shaligram. It opens the Hindu wedding season.',
+ 'Dev Diwali':'Kartak Purnima, the Diwali of the gods. Lamps are lit in the evening. It is also Guru Nanak Jayanti.',
+ 'Gita Jayanti':'The day Lord Krishna spoke the Bhagavad Gita to Arjuna at Kurukshetra. A good day to read or recite the Gita.',
+ 'Datta Jayanti':'Birthday of Lord Dattatreya, the combined form of Brahma, Vishnu and Shiva, on the full moon of Magshar.',
+ 'Vasant Panchami':'First day of spring and the day of Goddess Saraswati. Books and instruments are worshipped and people wear yellow.',
+ 'Maha Shivaratri':'The great night of Lord Shiva. Devotees fast, offer water, milk and bilva leaves to the Shiva linga and keep vigil through the night.',
+ 'Holi (Holika Dahan)':'A bonfire is lit after sunset on the full moon of Fagan, recalling how Prahlad was saved and Holika burned. It stands for the victory of good over evil.',
+ 'Dhuleti':'The day after Holika Dahan, when people play with colours and water.',
+ 'Makar Sankranti':'The Sun enters Makara (Capricorn) and begins its northward journey. A day for charity, sesame and jaggery sweets, and a holy bath.',
+ 'Uttarayan':'Gujarat\'s kite festival on 14 January. Families spend the day on the terrace flying kites and eating undhiyu, chikki and jalebi.',
+ 'Vasi Uttarayan':'The second day of kite flying in Gujarat, on 15 January.',
+ "New Year's Day":'First day of the calendar year. A federal holiday in the United States.',
+ 'Republic Day':'India\'s Republic Day, marking the day its Constitution came into force in 1950.',
+ 'Ambedkar Jayanti':'Birthday of Dr. B. R. Ambedkar, chief architect of the Constitution of India.',
+ 'Gujarat Day':'The state of Gujarat was formed on 1 May 1960.',
+ 'Independence Day':'India became independent from British rule on 15 August 1947.',
+ 'Gandhi Jayanti':'Birthday of Mahatma Gandhi, born in Porbandar, Gujarat, in 1869.',
+ 'Sardar Patel Jayanti':'Birthday of Sardar Vallabhbhai Patel, observed in India as National Unity Day.',
+ 'Christmas':'Christian festival of the birth of Jesus Christ. A federal holiday in the United States.',
+ 'Martin Luther King Jr. Day':'US federal holiday on the third Monday of January, honouring the civil rights leader. Banks, schools and government offices are closed.',
+ "Valentine's Day":'A day for expressing love with cards, flowers and gifts. Not a public holiday.',
+ "Presidents' Day":'US federal holiday on the third Monday of February, officially Washington\'s Birthday.',
+ 'Daylight saving time begins':'Clocks in most of the US move forward one hour at 2 AM. From today sunrise, and so the Brahma muhurta, comes an hour later by the clock.',
+ 'Easter':'Christian festival of the resurrection of Jesus. Always a Sunday; many shops keep shorter hours.',
+ "Mother's Day":'Second Sunday of May, a day to honour mothers. Not a public holiday.',
+ 'Memorial Day':'US federal holiday on the last Monday of May, honouring those who died in military service. It is the unofficial start of summer.',
+ 'Juneteenth':'US federal holiday marking the end of slavery in the United States, on 19 June 1865.',
+ "Father's Day":'Third Sunday of June, a day to honour fathers. Not a public holiday.',
+ 'US Independence Day':'The Fourth of July: the Declaration of Independence was adopted in 1776. A federal holiday with fireworks and parades.',
+ 'Labor Day':'US federal holiday on the first Monday of September, honouring workers. It marks the unofficial end of summer.',
+ 'Columbus Day':"US federal holiday on the second Monday of October, observed in many states as Indigenous Peoples' Day.",
+ 'Halloween':'Evening of costumes and trick-or-treating on 31 October. Not a public holiday.',
+ 'Daylight saving time ends':'Clocks in most of the US move back one hour at 2 AM. From today sunrise, and so the Brahma muhurta, comes an hour earlier by the clock.',
+ 'Veterans Day':'US federal holiday on 11 November, honouring everyone who served in the armed forces.',
+ 'Thanksgiving':'US federal holiday on the fourth Thursday of November. Families gather for a meal and give thanks; most businesses are closed.'
+};
+const why=f=>f[3]==='eka'?EKA[f[4]][2]+' '+EKA_HOW+' Break the fast the next morning after sunrise.':(INFO[f[1]]||'');
+// US holidays and observances for one year, keyed "month,day"
+const usYears={};
+function usDays(y){
+  if(usYears[y])return usYears[y];
+  const o={},add=(m,d,gu,en)=>{(o[m+','+d]=o[m+','+d]||[]).push([gu,en,false,'us']);};
+  const nth=(m,wd,n)=>1+((wd-new Date(Date.UTC(y,m-1,1)).getUTCDay()+7)%7)+(n-1)*7;      // wd: 0 = Sunday
+  const last=(m,wd)=>{const dim=new Date(Date.UTC(y,m,0)).getUTCDate();return dim-((new Date(Date.UTC(y,m-1,dim)).getUTCDay()-wd+7)%7);};
+  const a=y%19,b=Math.floor(y/100),c=y%100,h=(19*a+b-Math.floor(b/4)-Math.floor((b-Math.floor((b+8)/25)+1)/3)+15)%30,
+    l=(32+2*(b%4)+2*Math.floor(c/4)-h-(c%4))%7,mm=Math.floor((a+11*h+22*l)/451),em=Math.floor((h+l-7*mm+114)/31),ed=((h+l-7*mm+114)%31)+1;
+  add(1,nth(1,1,3),'માર્ટિન લ્યુથર કિંગ ડે','Martin Luther King Jr. Day');
+  add(2,14,'વેલેન્ટાઇન ડે',"Valentine's Day");
+  add(2,nth(2,1,3),'પ્રેસિડેન્ટ્સ ડે',"Presidents' Day");
+  add(3,nth(3,0,2),'ડેલાઇટ સેવિંગ શરૂ','Daylight saving time begins');
+  add(em,ed,'ઈસ્ટર','Easter');
+  add(5,nth(5,0,2),'મધર્સ ડે',"Mother's Day");
+  add(5,last(5,1),'મેમોરિયલ ડે','Memorial Day');
+  add(6,19,'જુનટીન્થ','Juneteenth');
+  add(6,nth(6,0,3),'ફાધર્સ ડે',"Father's Day");
+  add(7,4,'અમેરિકાનો સ્વતંત્રતા દિવસ','US Independence Day');
+  add(9,nth(9,1,1),'લેબર ડે','Labor Day');
+  add(10,nth(10,1,2),'કોલંબસ ડે','Columbus Day');
+  add(10,31,'હેલોવીન','Halloween');
+  add(11,nth(11,0,1),'ડેલાઇટ સેવિંગ પૂર્ણ','Daylight saving time ends');
+  add(11,11,'વેટરન્સ ડે','Veterans Day');
+  add(11,nth(11,4,4),'થેંક્સગિવિંગ','Thanksgiving');
+  return usYears[y]=o;
+}
+// shown when the chosen location is in the US (or its country is unknown, as with a bare live position)
+const civil=(y,m,d)=>(S.loc.cc&&S.loc.cc!=='US')?[]:(usDays(y)[m+','+d]||[]);
+
 /* ---------- Panchang (same method as the Morning Briefing app, for any location) ---------- */
 const PZ=(()=>{
   const DAY=864e5,HOUR=36e5,MIN=6e4,J2000=Date.UTC(2000,0,1,12);
@@ -832,16 +968,16 @@ const PZ=(()=>{
       return [tithiAt(t),...masaAt(t)];
     });
   }
-  function festivals(dn){                     // [[gujarati, english, major?], ...]
+  function festivals(dn){                     // [[gujarati, english, major?, kind, ekadashi key], ...]
     return memo('f'+dn,()=>{
-      const out=[],[,gm,gd]=ymd(dn),fixed=PD.FIXED[gm+','+gd];
-      if(fixed)out.push(fixed);
+      const out=[],[gy,gm,gd]=ymd(dn),fixed=PD.FIXED[gm+','+gd];let eka=null;
       for(const ref of ['sunrise','midday','afternoon','sunset','midnight']){
         const [t,m,adh]=tm(dn,ref),[tp,mp]=tm(dn-1,ref),[tn,mn,adhn]=tm(dn+1,ref),found=[];
         if(tp!==t||mp!==m)found.push([m,adh,t]);                 // a tithi on two days is kept on the first
         const skipped=(((tn-t)%30)+30)%30;
         for(let step=1;step<skipped;step++){const k=((t+step-1)%30)+1;found.push(k<t?[mn,adhn,k]:[m,adh,k]);}   // kshaya tithis
         for(const [masa,adhik,tt] of found){
+          if(ref==='sunrise'&&(tt===11||tt===26))eka=adhik?(tt===11?'as':'av'):masa+(tt===11?'s':'v');
           const named=adhik?[]:(PD.FESTIVALS[masa+','+tt]||[]);
           for(const [gu,en,r] of named)if(r===ref)out.push([gu,en]);
           const mon=PD.MONTHLY[tt];
@@ -851,7 +987,10 @@ const PZ=(()=>{
       const {rise,nrise}=sun(dn);
       if(sunRashi(rise)===8&&sunRashi(nrise)===9)out.push(['મકર સંક્રાંતિ','Makar Sankranti']);
       const seen=new Set(),res=[];
-      for(const [gu,en] of out)if(!seen.has(en)){seen.add(en);res.push([gu,en,PD.MAJOR.includes(en)]);}
+      if(eka){const e=EKA[eka];res.push([e[0]+' એકાદશી',e[1]+' Ekadashi',false,'eka',eka]);}
+      for(const [gu,en] of out)if(!seen.has(en)&&!(eka&&/Ekadashi/.test(en))){seen.add(en);res.push([gu,en,PD.MAJOR.includes(en),'']);}
+      if(fixed&&!seen.has(fixed[1])){seen.add(fixed[1]);res.push([fixed[0],fixed[1],PD.MAJOR.includes(fixed[1]),'']);}
+      for(const c of civil(gy,gm,gd))if(!seen.has(c[1])){seen.add(c[1]);res.push(c);}
       return res;
     });
   }
@@ -878,10 +1017,20 @@ const PZ=(()=>{
     const [t,mi,adhik]=tm(dn,'sunrise');
     return {t,mi,adhik,masa:PD.MASA[mi],short:t===15?'પૂનમ':t===30?'અમાસ':t<15?'સુદ '+t:'વદ '+(t-15),festivals:festivals(dn)};
   }
+  function nextEka(){                         // the next Ekadashi fast, with the time to break it the morning after
+    const t0=dnOf(Date.now());
+    return memo('e'+t0,()=>{
+      for(let d=t0;d<=t0+20;d++){
+        const f=festivals(d).find(q=>q[3]==='eka');
+        if(f){const r=sun(d+1).rise,t=tithiAt(r);return {dn:d,f,left:d-t0,rise:r,end:(t===12||t===27)?nextChange(tithiAt,r):null};}
+      }
+      return null;
+    });
+  }
   function upcoming(max,days){
     const t0=dnOf(Date.now());return memo('u'+t0,()=>{const out=[];for(let d=t0+1;out.length<max&&d<=t0+days;d++){const f=festivals(d);if(f.length)out.push([d,f]);}return out;});
   }
-  return {setLoc,dnOf,fmt,fmtd,label,details,brahma,festivals,upcoming,summary,ymd,wd,today:()=>dnOf(Date.now()),tz:()=>L.tz};
+  return {setLoc,dnOf,fmt,fmtd,label,details,brahma,festivals,upcoming,summary,ymd,wd,nextEka,today:()=>dnOf(Date.now()),tz:()=>L.tz};
 })();
 PZ.setLoc(S.loc);
 const ready=()=>typeof Astronomy!=='undefined'&&typeof PD!=='undefined';
@@ -895,7 +1044,7 @@ function drawCal(){
   for(let i=0;i<42;i++){
     const dn=start+i,[,m,d]=PZ.ymd(dn),inside=m===calM,s=PZ.summary(dn),major=s.festivals.some(f=>f[2]),f=s.festivals[0];
     if(inside){const nm=s.masa[0]+(s.adhik?' (અધિક)':'');if(!masas.includes(nm))masas.push(nm);s.festivals.forEach(q=>mf.push([dn,q]));}
-    h+='<button type="button" class="cell'+(inside?'':' out')+(dn===tdn?' today':'')+(dn===pdn?' sel':'')+(PZ.wd(dn)===6||major?' red':'')+'" data-dn="'+dn+'"><span class="d">'+d+'</span><span class="t">'+s.short+'</span>'+(f?'<span class="f'+(major?' major':'')+'">'+esc(f[0])+'</span>':'')+'</button>';
+    h+='<button type="button" class="cell'+(inside?'':' out')+(dn===tdn?' today':'')+(dn===pdn?' sel':'')+(PZ.wd(dn)===6||major?' red':'')+'" data-dn="'+dn+'"><span class="d">'+d+'</span><span class="t">'+s.short+'</span>'+(f?'<span class="f'+(f[3]==='us'?' us':major?' major':'')+'">'+esc(f[0])+'</span>':'')+'</button>';
   }
   $('cal').innerHTML=h;
   const s1=PZ.summary(first);
@@ -933,7 +1082,7 @@ function drawPanchang(){
     const row=(k,v,c)=>'<div class="prow"><span class="k">'+k+'</span><span class="v '+(c||'')+'">'+v+'</span></div>';
     const list=a=>a.map(([n,end])=>bi(n)+(end?' until '+PZ.fmtd(end,pdn):'')).join('<br>');
     const rng=([a,b])=>PZ.fmt(a)+' – '+PZ.fmt(b);
-    const fest=f=>'<div class="fest'+(f[2]?' major':'')+'"><b>★ '+esc(f[0])+'</b><small>'+esc(f[1])+'</small></div>';
+    const fest=f=>'<div class="fest'+(f[2]?' major':'')+(f[3]==='us'?' us':'')+'"><b>★ '+esc(f[0])+'</b><small>'+esc(f[1])+'</small>'+(why(f)?'<p class="why">'+why(f)+'</p>':'')+'</div>';
     let h='<div class="sec">તહેવાર · Festival</div>'+(x.festivals.length?x.festivals.map(fest).join(''):'<p class="note">આ દિવસે કોઈ તહેવાર નથી. No festival on this day.</p>');
     h+='<div class="sec">પંચાંગ · Panchang</div>'+row('માસ Month',bi(x.masa)+(x.adhik?' · અધિક માસ':'')+' · વિક્રમ સંવત '+x.samvat)+row('પક્ષ Paksha',bi(x.paksha))+row('તિથિ Tithi',list(x.tithi))+
       row('નક્ષત્ર Nakshatra',list(x.nakshatra))+row('યોગ Yoga',list(x.yoga))+row('કરણ Karana',list(x.karana))+row('વાર Vara',bi(x.vara))+
@@ -952,7 +1101,21 @@ function drawPanchang(){
     box.innerHTML=h;
   }catch(e){box.innerHTML='<p class="note">The Panchang could not be calculated: '+esc(e.message)+'.</p>';}
 }
+function drawEka(){
+  const p=$('ekaPanel');
+  if(!ready()){p.hidden=true;return;}
+  try{
+    const e=PZ.nextEka();if(!e){p.hidden=true;return;}
+    const when=e.left===0?'આજે · Today is the fasting day':e.left===1?'આવતી કાલે · Tomorrow':'in '+e.left+' days';
+    p.hidden=false;p.classList.toggle('soon',e.left<=1);
+    $('ekaBody').innerHTML='<p class="ekaname"><b>'+esc(e.f[0])+'</b> · '+esc(e.f[1])+'</p>'+
+      '<p class="status">'+PZ.label(e.dn,{weekday:'long',day:'numeric',month:'long'})+' · '+when+'</p>'+
+      '<p>'+EKA[e.f[4]][2]+'</p>'+
+      '<p class="note">'+EKA_HOW+' Break the fast (parana) on '+PZ.label(e.dn+1,{weekday:'long'})+' after sunrise at '+PZ.fmt(e.rise)+(e.end?', and before '+PZ.fmt(e.end)+' when Dwadashi ends':'')+'. Smarta and Vaishnava dates can fall a day apart, so follow your temple if it differs.</p>';
+  }catch(x){p.hidden=true;}
+}
 function drawStrip(){
+  drawEka();
   const el=$('strip');
   if(!ready()){el.innerHTML='<span>Panchang unavailable offline. Open once with internet.</span>';return;}
   try{

@@ -16,9 +16,26 @@ This is an extra self-help project, separate from my ML/AI portfolio.
 
 | Device | How |
 |---|---|
+| Windows | Download **BrahmaMuhurtaSadhana.exe** from the [latest release](https://github.com/niral-patel/brahma-muhurta-sadhana/releases/latest), double-click it and choose **Yes** to install. See [Windows app](#windows-app). |
 | iPhone | Open the link in **Safari** → **Share** → **Add to Home Screen**. It opens full screen from its icon. |
-| Windows / Mac (Chrome or Edge) | Open the link → **Install** icon in the address bar, or menu → **Save and share** → **Install**. |
+| Mac (Chrome or Edge) | Open the link → **Install** icon in the address bar, or menu → **Save and share** → **Install**. |
 | Mac (Safari) | Open the link → **File** → **Add to Dock**. |
+
+## Windows app
+
+`BrahmaMuhurtaSadhana.exe` is one 2.5 MB file that is both the app and its installer.
+
+- **Install:** double-click it and choose **Yes**. It copies itself to `%LocalAppData%\Programs\BrahmaMuhurtaSadhana`,
+  adds Start menu and Desktop shortcuts, and opens. Choose **No** to run it once without installing.
+- **Uninstall:** Windows Settings → Apps → Installed apps → Brahma Muhurta Sadhana → Uninstall. It asks whether to keep
+  your saved routine, history and books.
+- **Needs:** Windows 10 or 11 (64-bit). It uses the .NET Framework and the Edge WebView2 Runtime that Windows 11 already has.
+- **Works offline.** The whole app is inside the exe; only the fonts come from the internet.
+- **Data** is kept in `%LocalAppData%\BrahmaMuhurtaSadhana`, separate from the browser version. Use Progress → Backup to move it.
+- **First run on another PC:** the file is not code-signed, so Windows SmartScreen may say "Windows protected your PC".
+  Choose **More info → Run anyway**.
+- **Build it yourself:** run `windows/build.sh` in Git Bash. It uses the C# compiler that ships with Windows
+  (`csc.exe`, .NET Framework 4.x); no SDK is needed. Source is `windows/Program.cs`.
 
 ## The five tabs
 
@@ -70,7 +87,12 @@ method as my Morning Briefing app: Lahiri ayanamsa, amanta months, day counted f
 - Shows month and Vikram Samvat, paksha, tithi, nakshatra, yoga, karana, sunrise, sunset, Brahma and
   Abhijit muhurta, Rahu kaal, Yamaganda, Gulika kaal, and day and night choghadiya.
 - **Festivals and fasting days** (Ekadashi, Pradosh, Purnima, Amavasya, Sankashti and the main festivals)
-  for the selected day and the next 45 days. Dates follow the Gujarati calendar and the local sunrise, so
+  for the selected day and the next 45 days, each with a short explanation of what it is and how it is observed.
+- **Ekadashi**: every Ekadashi has its own name (Kamada, Nirjala, Dev Uthi and so on) and the benefit
+  traditionally linked to it. The Today tab always shows the next Ekadashi fast, how many days are left,
+  and when to break the fast the next morning.
+- **US holidays** (Thanksgiving, Memorial Day, the Fourth of July, daylight saving changes and others) are
+  shown when the location is in the United States. Dates follow the Gujarati calendar and the local sunrise, so
   outside India a few can fall a day apart from the date in India.
 - Times can differ by a minute or two from printed panchangs.
 
