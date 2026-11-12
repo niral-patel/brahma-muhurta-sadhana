@@ -1,13 +1,14 @@
 # Brahma Muhurta Sadhana
 
 A guided early-morning routine (around 3:30 AM to 4:30 AM) that walks you step by step through
-exercise, pranayama, meditation and puja, with how-to instructions for every step, a wake-up alarm,
-and a Panchang with muhurat times for Dallas, TX.
+exercise, pranayama, meditation, Rama nama japa, puja and reading. It has how-to instructions and
+shlokas for every step, a wake-up alarm, a Panchang with muhurat and festivals for your location,
+a streak calendar kept year by year, and a book tracker.
 
 **Open the app:** https://niral-patel.github.io/brahma-muhurta-sadhana/
 
 It is a small web app with no account and no audio files. It runs the same on Windows, Mac and iPhone,
-and works offline after the first visit.
+and works offline after the first visit. Labels are in English and Gujarati.
 
 This is an extra self-help project, separate from my ML/AI portfolio.
 
@@ -19,62 +20,69 @@ This is an extra self-help project, separate from my ML/AI portfolio.
 | Windows / Mac (Chrome or Edge) | Open the link → **Install** icon in the address bar, or menu → **Save and share** → **Install**. |
 | Mac (Safari) | Open the link → **File** → **Add to Dock**. |
 
-## The four tabs
+## The five tabs
 
 | Tab | What it shows |
 |---|---|
-| **Today** | The current step with a countdown, how to do it, today's Panchang summary and the alarm |
-| **Routine** | Every step: switch it on or off, set minutes (or rounds), reorder, jump to it |
-| **Panchang** | Tithi, nakshatra, yoga, karana, sunrise, sunset, muhurat and choghadiya for Dallas, any day |
-| **Guide** | Suggestions for keeping the routine, how to do each step, and the weekly meditation plan |
+| **Today** | The current step with a countdown, how to do it, its shlokas, today's Panchang summary and the alarm |
+| **Routine** | Every step: switch it on or off, set minutes (or rounds / malas), reorder, jump to it |
+| **Panchang** | Location, festival, tithi, nakshatra, yoga, karana, sunrise, sunset, muhurat, choghadiya and coming festivals |
+| **Guide** | Suggestions, how to do each step with shlokas (Gujarati or Devanagari script), weekly meditation plan |
+| **Progress** | Streak, year calendar, yearly totals, book list and tracker, backup |
 
 ## The default routine (60 minutes)
 
 | Time | Step | Guidance on screen |
 |---|---|---|
-| 3:30 | Wake up and freshen (4 min) | Countdown |
-| 3:34 | Walk (4 min) | Countdown |
-| 3:38 | Surya Namaskar (4 rounds) | 12 postures listed; tap **Round done** after each round |
-| 3:44 | Hanuman dand (3 min) | 40 s work / 20 s rest |
-| 3:47 | Push-ups (3 min) | 40 s work / 20 s rest |
-| 3:50 | Plank (2 min) | 45 s hold / 15 s rest |
-| 3:52 | Cold shower (4 min) | Countdown |
-| 3:56 | Kapalbhati (5 min) | Stroke counter, one per second, 45 s on / 15 s rest |
-| 4:01 | Anulom Vilom (5 min) | Left/right cues; the circle grows on inhale (4) and shrinks on exhale (8) |
-| 4:06 | Bhramari (3 min) | Inhale 4, hum 8 |
-| 4:09 | Ujjayi (3 min) | Inhale 5, exhale 5 |
-| 4:12 | Meditation (10 min) | Opening bell, a drone in the pitch of the day, soft bell every 5 minutes, closing bell |
-| 4:22 | Puja (8 min) | Countdown |
+| 3:30 | Wake up and freshen (3 min) | Waking shlokas |
+| 3:33 | Walk (3 min) | Countdown |
+| 3:36 | Surya Namaskar (4 rounds) | 12 postures; one name of Surya per round; tap **Round done** |
+| 3:42 | Hanuman dand (2 min) | 40 s work / 20 s rest |
+| 3:44 | Push-ups (2 min) | 40 s work / 20 s rest |
+| 3:46 | Plank (2 min) | 45 s hold / 15 s rest |
+| 3:48 | Cold shower (4 min) | Bathing shloka |
+| 3:52 | Kapalbhati (4 min) | Stroke counter, one per second, 45 s on / 15 s rest |
+| 3:56 | Anulom Vilom (4 min) | Left/right cues; the circle grows on inhale (4) and shrinks on exhale (8) |
+| 4:00 | Bhramari (2 min) | Inhale 4, hum 8 |
+| 4:02 | Ujjayi (2 min) | Inhale 5, exhale 5 |
+| 4:04 | Meditation (8 min) | Opening shlokas, a drone in the pitch of the day, bell every 5 minutes |
+| 4:12 | Rama nama japa (1 mala) | Tap the circle for each name; counts to 108 |
+| 4:18 | Puja (6 min) | Ganesha, lamp and closing shlokas |
+| 4:24 | Book reading (6 min) | Prayer before reading; save the page you reached |
 
-Bhastrika, Sheetali, Shavasana and Japa are included but switched off. Tick them in **Routine** to add them.
-Surya Namaskar is counted in rounds, not minutes; change the number of rounds in **Routine**.
+Bhastrika, Sheetali and Shavasana are included but switched off. **Length** on the Today tab switches
+between the full routine and fixed 30 minute and 20 minute versions for short days.
 
 ## Sound
 
-Only two things make sound: the **wake-up alarm** and the **meditation** (bells and drone).
-Every other step is silent and guided on screen. There is no voice.
+- The **wake-up alarm**.
+- **Meditation**: opening bell, drone, a bell every 5 minutes, closing bell.
+- One **soft bell when a timed step ends on its own** (can be switched off). A bell also marks each completed mala.
+- **Back** and **Next step** are always silent. There is no voice.
 
-## Meditation through the week
+## Panchang, muhurat and festivals
 
-| Day | Focus | Technique | Mantra |
-|---|---|---|---|
-| Mon | Muladhara, base of the spine | Body scan | Lam |
-| Tue | Svadhisthana, below the navel | Breath counting | Vam |
-| Wed | Manipura, navel | Flame visualisation | Ram |
-| Thu | Anahata, centre of the chest | Maitri (loving-kindness) | Yam |
-| Fri | Vishuddha, throat | Om chanting | Ham |
-| Sat | Ajna, between the eyebrows | Dharana (one-point focus) | Om |
-| Sun | Sahasrara, crown | Open awareness | silent Om |
+Calculated on the device with [astronomy-engine](https://github.com/cosinekitty/astronomy) and the same
+method as my Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise.
 
-## Panchang and muhurat
+- **Location**: use the device's live location, or choose country → state → city (about 38,000 places,
+  from [GeoNames](https://www.geonames.org/), CC BY 4.0). The default is Dallas, TX.
+- Shows month and Vikram Samvat, paksha, tithi, nakshatra, yoga, karana, sunrise, sunset, Brahma and
+  Abhijit muhurta, Rahu kaal, Yamaganda, Gulika kaal, and day and night choghadiya.
+- **Festivals and fasting days** (Ekadashi, Pradosh, Purnima, Amavasya, Sankashti and the main festivals)
+  for the selected day and the next 45 days. Dates follow the Gujarati calendar and the local sunrise, so
+  outside India a few can fall a day apart from the date in India.
+- Times can differ by a minute or two from printed panchangs.
 
-Calculated on the device for **Dallas, TX** (32.78° N, 96.80° W) in Central time, using the
-[astronomy-engine](https://github.com/cosinekitty/astronomy) library and the same method as my
-Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise.
+## Progress, books and backup
 
-It shows the month and Vikram Samvat, paksha, tithi, nakshatra, yoga, karana, sunrise and sunset,
-Brahma muhurta, Abhijit muhurta, Rahu kaal, Yamaganda, Gulika kaal and the day and night choghadiya.
-Times can differ by a minute or two from printed panchangs. Festivals are not listed.
+- A day is marked done when the routine is finished after at least 5 minutes of practice; any past day
+  can be marked or unmarked by hand.
+- Every year is kept. Yearly totals: days done, best streak, hours, malas of japa, pages read, books finished.
+- **Books**: add and remove books, choose the one you are reading, save the page reached; pages are added
+  to the day's total.
+- Everything is stored in the browser on that device only. **Backup** gives a text you can paste into the
+  app on another device.
 
 ## The alarm, and its limit
 
@@ -89,11 +97,15 @@ Skip Kapalbhati and Bhastrika if you are pregnant or have high blood pressure, h
 or recent abdominal surgery. Ease into cold showers if you have a heart condition. Stop any practice
 that makes you dizzy and breathe normally. This app is a timer and guide, not medical advice.
 
+The shlokas are the commonly recited versions; wording varies a little between traditions.
+
 ## Files
 
 | File | Purpose |
 |---|---|
 | `index.html` | The whole app: layout, styles and logic |
-| `astronomy.js` | astronomy-engine 2.1.19 (MIT), sun and moon positions for the Panchang |
+| `astronomy.js` | astronomy-engine 2.1.19 (MIT), sun and moon positions |
+| `panchang-data.js` | Gujarati and English names, festival rules (from my Morning Briefing app) |
+| `cities.json` | Country → state → city list with coordinates and time zones (GeoNames) |
 | `sw.js` | Service worker that caches the app for offline use |
 | `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` | Install-as-app details and icons |

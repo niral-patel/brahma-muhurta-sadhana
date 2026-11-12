@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Guided early-morning routine: exercise, pranayama, meditation and puja, with a Dallas Panchang">
+<meta name="description" content="Guided early-morning routine: exercise, pranayama, meditation, Rama nama japa, puja and reading, with a Panchang for your location">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Sadhana">
@@ -19,15 +19,15 @@ img{max-width:100%}
 [hidden]{display:none!important}
 </style>
 <title>Brahma Muhurta Sadhana</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&family=Yatra+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&family=Mukta+Vaani:wght@400;500;700&family=Yatra+One&display=swap">
 <style>
-/* Layout: pre-dawn sky. Four views behind a bottom tab bar (Today, Routine, Panchang, Guide); Today is the guided "now" panel plus alarm. */
+/* Layout: pre-dawn sky. Five views behind a bottom tab bar (Today, Routine, Panchang, Guide, Progress); Today is the guided "now" panel plus alarm. */
 :root{
   --bg:#14122b; --surface:#1d1a3c; --raised:#27234d; --line:#38336a;
   --fg:#f0ecfa; --muted:#aaa4cc; --accent:#f5a623; --accent-ink:#2b1a00; --dawn:#ee8a9a;
   --good:#7fd694; --bad:#ff9a9a;
-  --display:"Yatra One","Mukta",system-ui,sans-serif;
-  --body:"Mukta",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Yatra One","Mukta","Mukta Vaani",system-ui,sans-serif;
+  --body:"Mukta","Mukta Vaani",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){
@@ -46,7 +46,7 @@ img{max-width:100%}
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 96px}
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 104px}
 .wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
 h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.15;margin:0;text-wrap:balance}
@@ -62,20 +62,23 @@ h3{font-size:1.05rem;margin:0}
 button{font:inherit;color:var(--fg);background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
 button:hover{border-color:var(--accent)}
 button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
-button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.small{padding:4px 9px;font-size:.9rem}
 button:disabled{opacity:.4;cursor:default}
-input[type=time],input[type=number]{font:inherit;color:var(--fg);background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
-input[type=number]{width:4.2em}
-input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+input[type=time],input[type=number],input[type=text],input[type=search],select,textarea{font:inherit;color:var(--fg);background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0;max-width:100%}
+input[type=number]{width:4.6em}
+input[type=checkbox],input[type=radio]{width:18px;height:18px;accent-color:var(--accent);flex:none}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .between{justify-content:space-between}
+.grow{flex:1 1 160px}
 .note{color:var(--muted);font-size:.92rem;margin:0;max-width:75ch}
 .status{color:var(--muted);margin:0;font-size:.95rem}
+label.chk{display:flex;align-items:center;gap:8px}
 
 /* now panel */
 .now{align-items:center;text-align:center}
-.ring{position:relative;width:210px;max-width:100%;aspect-ratio:1}
+.ring{position:relative;width:210px;max-width:100%;aspect-ratio:1;border-radius:50%}
+.ring.tap{cursor:pointer}
 .ring svg{position:relative;width:100%;height:100%;transform:rotate(-90deg)}
 .ring .track{fill:none;stroke:var(--raised);stroke-width:7}
 .ring .prog{fill:none;stroke:var(--accent);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
@@ -84,20 +87,26 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .clock{font-family:var(--display);font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
 .count{color:var(--muted);font-size:.9rem}
 .stepname{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0;text-wrap:balance}
+.stepgu{color:var(--muted);margin:-8px 0 0}
 .cue{min-height:1.6em;font-size:1.25rem;font-weight:700;color:var(--dawn);margin:0}
-.how{text-align:left;width:100%;max-width:52ch;color:var(--fg)}
+.how{text-align:left;width:100%;max-width:56ch;color:var(--fg);display:flex;flex-direction:column;gap:10px}
 .how ol,.guide ol{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:4px}
-.tip{color:var(--muted);margin:8px 0 0;font-size:.95rem}
+.tip{color:var(--muted);margin:0;font-size:.95rem}
+.mantra{border-left:3px solid var(--accent);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:2px}
+.mantra b{font-size:.85rem;color:var(--muted);font-weight:700}
+.mantra .sk{font-size:1.15rem;line-height:1.6;margin:0}
+.mantra .rom{margin:0;font-style:italic}
+.mantra ol{font-size:1.02rem}
 .bar{width:100%;height:5px;border-radius:3px;background:var(--raised);overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--dawn)}
-.ctrl,.opts{justify-content:center}
-.opts{color:var(--muted);font-size:.95rem}
-.opts label{display:flex;align-items:center;gap:6px}
+.ctrl,.center{justify-content:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;border-radius:0;background:none;padding:6px 12px;font-size:.92rem;color:var(--muted)}
+.seg button.on{background:var(--raised);color:var(--accent);font-weight:700}
 input[type=range]{accent-color:var(--accent);width:110px}
 
 /* panchang strip + alarm */
 .strip{text-align:left;display:flex;flex-direction:column;gap:2px;padding:14px 18px;border-radius:14px;background:var(--surface)}
-.strip b{font-weight:700}
 .strip span{color:var(--muted);font-size:.95rem}
 .ringing{border-color:var(--accent);background:var(--raised)}
 
@@ -113,32 +122,51 @@ ol.steps li.cur .nm b{color:var(--accent)}
 .mins{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:.85rem}
 
 /* panchang */
-.sec{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700;padding-top:8px}
+.sec{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700;padding-top:10px}
 .prow{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr);gap:2px 12px;padding:7px 0;border-top:1px solid var(--line)}
 .prow .k{color:var(--muted)}
 .prow .v{font-variant-numeric:tabular-nums}
 .good{color:var(--good)} .bad{color:var(--bad)}
-.crow{display:grid;grid-template-columns:minmax(0,11.5em) minmax(0,1fr) auto;gap:2px 10px;padding:6px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.crow{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr) auto;gap:2px 10px;padding:6px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
 .crow.now{font-weight:700}
 .crow .q{font-size:.85rem}
+.fest{padding:6px 0;border-top:1px solid var(--line)}
+.fest.major b{color:var(--accent)}
+.fest small{color:var(--muted);display:block}
+.citylist{display:flex;flex-direction:column;max-height:260px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+.citylist button{border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;text-align:left;padding:8px 12px}
+.citylist button small{color:var(--muted)}
 
-/* guide */
+/* guide + progress */
 .guide ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:75ch}
 details{border-top:1px solid var(--line);padding:9px 0}
 summary{cursor:pointer;font-weight:700;border-radius:4px}
 summary small{color:var(--muted);font-weight:400}
-details .body{padding-top:8px}
+details .body{padding-top:8px;display:flex;flex-direction:column;gap:10px}
 .day{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:2px 12px;padding:9px 0;border-top:1px solid var(--line)}
 .day .d{font-weight:700;color:var(--muted)}
 .day.today .d{color:var(--accent)}
 .day p{margin:0}
 .day small{color:var(--muted);font-size:.9rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:10px}
+.stat{background:var(--raised);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-family:var(--display);font-size:1.5rem;font-weight:400;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.85rem}
+.months{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.month b{display:block;font-size:.85rem;color:var(--muted);padding-bottom:4px}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mgrid button{aspect-ratio:1;padding:0;border-radius:5px;border:1px solid transparent;background:var(--raised);color:var(--muted);font-size:.68rem;line-height:1;font-variant-numeric:tabular-nums}
+.mgrid button.done{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.mgrid button.today{border-color:var(--dawn)}
+.book{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:8px}
+.book.fin b{color:var(--good)}
+textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:.8rem}
 
 /* bottom tabs */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;gap:4px;background:var(--surface);border-top:1px solid var(--line);
-  padding:6px max(16px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.tabs button{flex:1 1 0;max-width:150px;min-width:0;background:none;border:0;border-radius:10px;padding:6px 4px;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-size:.85rem;line-height:1.2}
-.tabs button span{font-size:1.2rem}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;gap:2px;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabs button{flex:1 1 0;max-width:140px;min-width:0;background:none;border:0;border-radius:10px;padding:5px 2px;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-size:.8rem;line-height:1.25}
+.tabs button small{font-size:.72rem;opacity:.85}
 .tabs button.on{color:var(--accent);font-weight:700;background:var(--raised)}
 @media (prefers-reduced-motion:reduce){.ring .prog,#pulse{transition:none!important}}
 </style>
@@ -157,12 +185,13 @@ details .body{padding-top:8px}
       <div class="col">
         <section class="panel now" aria-live="polite">
           <h2 id="groupLbl">Ready</h2>
-          <div class="ring">
+          <div class="ring" id="ring">
             <i id="pulse" aria-hidden="true"></i>
             <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="54"></circle><circle class="prog" id="prog" cx="60" cy="60" r="54" stroke-dasharray="339.3" stroke-dashoffset="0"></circle></svg>
             <div class="mid"><div class="clock" id="clock">0:00</div><div class="count" id="count"></div></div>
           </div>
           <p class="stepname" id="stepName"></p>
+          <p class="stepgu" id="stepGu"></p>
           <p class="cue" id="cue"></p>
           <div class="bar" aria-hidden="true"><i id="overall"></i></div>
           <div class="row ctrl">
@@ -171,26 +200,35 @@ details .body{padding-top:8px}
             <button id="nextBtn" type="button">Next step</button>
             <button id="plusBtn" type="button">+1 min</button>
           </div>
+          <div class="row center">
+            <span class="status">Length</span>
+            <div class="seg" id="modeSeg">
+              <button type="button" data-mode="full">Full</button>
+              <button type="button" data-mode="30">30 min</button>
+              <button type="button" data-mode="20">20 min</button>
+            </div>
+          </div>
           <div class="how" id="how"></div>
         </section>
       </div>
 
       <div class="col">
-        <button class="strip" id="strip" type="button" title="Open the Panchang"><span>Calculating the Panchang for Dallas…</span></button>
+        <button class="strip" id="strip" type="button" title="Open the Panchang"><span>Calculating the Panchang…</span></button>
 
         <section class="panel" id="alarmPanel">
-          <h2>Wake-up alarm</h2>
+          <h2>Wake-up alarm · એલાર્મ</h2>
           <div class="row">
             <input type="time" id="alarmTime" aria-label="Alarm time">
             <button id="armBtn" type="button" class="primary">Set alarm</button>
             <button id="beginBtn" type="button" hidden>Begin sadhana</button>
           </div>
           <p class="status" id="alarmStatus"></p>
-          <div class="row opts" style="justify-content:flex-start">
-            <label>Volume <input type="range" id="vol" min="0" max="1" step="0.05"></label>
+          <div class="row">
+            <label class="chk status">Volume <input type="range" id="vol" min="0" max="1" step="0.05"></label>
             <button id="testBtn" type="button" class="small">Test sound</button>
           </div>
-          <p class="note">Sound plays only for the alarm and during meditation. Every other step is silent, so follow the screen. The alarm rings only while this page stays open with the screen on; on iPhone, also set the Clock app alarm as your real wake-up.</p>
+          <label class="chk"><input type="checkbox" id="stepBell"> Soft bell when a step ends on its own</label>
+          <p class="note">Sound plays for the alarm, during meditation, and as one soft bell when a timed step finishes. Back and Next step are always silent. The alarm rings only while this page stays open with the screen on; on iPhone, also set the Clock app alarm as your real wake-up.</p>
         </section>
       </div>
     </div>
@@ -200,10 +238,10 @@ details .body{padding-top:8px}
   <section class="view narrow" id="v-routine" hidden>
     <section class="panel">
       <div class="row between">
-        <h2>Your routine</h2>
+        <h2>Your routine · દિનચર્યા</h2>
         <span class="status" id="totalLine"></span>
       </div>
-      <p class="note">Tick a step to include it, set its minutes (or rounds for Surya Namaskar), move it with the arrows, or tap its name to jump to it.</p>
+      <p class="note" id="routineNote"></p>
       <ol class="steps" id="steps"></ol>
       <div class="row"><button id="resetBtn" type="button" class="small">Restore default routine</button></div>
     </section>
@@ -212,109 +250,197 @@ details .body{padding-top:8px}
   <!-- PANCHANG -->
   <section class="view narrow" id="v-panchang" hidden>
     <section class="panel">
+      <h2>Location · સ્થળ</h2>
+      <p class="status">Now: <b id="locName"></b></p>
+      <div class="row">
+        <button id="locLive" type="button" class="primary">Use my live location</button>
+        <span class="status" id="locStatus"></span>
+      </div>
+      <details id="locPick">
+        <summary>Choose country, state and city</summary>
+        <div class="body">
+          <div class="row">
+            <select id="locCountry" class="grow" aria-label="Country"></select>
+            <select id="locState" class="grow" aria-label="State"></select>
+          </div>
+          <input type="search" id="locQ" placeholder="Search a city, for example Frisco" autocomplete="off" aria-label="Search city">
+          <div class="citylist" id="locList"></div>
+        </div>
+      </details>
+    </section>
+    <section class="panel">
       <div class="row between">
         <button id="pPrev" type="button" class="small" aria-label="Previous day">◀</button>
-        <div style="text-align:center;min-width:0"><h3 id="pTitle"></h3><span class="status">Dallas, TX · Central time</span></div>
+        <div style="text-align:center;min-width:0"><h3 id="pTitle"></h3><span class="status" id="pSub"></span></div>
         <button id="pNext" type="button" class="small" aria-label="Next day">▶</button>
       </div>
-      <div class="row" style="justify-content:center"><button id="pToday" type="button" class="small">Today</button></div>
+      <div class="row center"><button id="pToday" type="button" class="small">આજે · Today</button></div>
       <div id="pBody"></div>
-      <p class="note">Calculated for Dallas, TX (32.78° N, 96.80° W) with the same method as the Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise. Times can differ by a minute or two from printed panchangs. Festivals are not listed here.</p>
+      <p class="note">Calculated on this device for the location above, with the same method as the Morning Briefing app: Lahiri ayanamsa, amanta months, day counted from sunrise to sunrise. Times can differ by a minute or two from printed panchangs. Festival dates follow the Gujarati calendar and the local sunrise, so outside India a few can fall a day apart from the date in India.</p>
     </section>
   </section>
 
   <!-- GUIDE -->
   <section class="view narrow guide" id="v-guide" hidden>
     <section class="panel">
-      <h2>Suggestions</h2>
+      <h2>Suggestions · સૂચનો</h2>
       <ul>
         <li><b>Move your bedtime first.</b> A 3:30 AM start needs you in bed by 8:30 to 9:00 PM. Without that the routine will not last a week.</li>
         <li><b>Eat light and early.</b> Finish dinner 2 to 3 hours before bed, and put screens away for the last 30 minutes.</li>
-        <li><b>Prepare the night before.</b> Lay out the mat, clothes and puja thali, and keep a glass of water by the bed.</li>
+        <li><b>Prepare the night before.</b> Lay out the mat, clothes, mala, book and puja thali, and keep a glass of water by the bed.</li>
         <li><b>Practise on an empty stomach.</b> Warm water on waking is enough. Wait 20 to 30 minutes after the routine before breakfast.</li>
         <li><b>Same place, same time.</b> Sit facing east or north in a clean, quiet corner you use every day.</li>
-        <li><b>Keep the order.</b> Exercise first, then the shower, then pranayama, then meditation, then puja. Each one settles the body for the next.</li>
-        <li><b>Start small.</b> In week one, switch off some steps and do 30 minutes. Add one step a week.</li>
-        <li><b>Surya Namaskar.</b> Begin with 3 or 4 rounds and add one round a week, up to 12.</li>
-        <li><b>Rest between pranayamas.</b> Take five normal breaths before the next one. If you have time, switch on Shavasana after Ujjayi.</li>
-        <li><b>Silence the phone.</b> Use Do Not Disturb so only this app can interrupt you.</li>
-        <li><b>The real Brahma muhurta moves with the sunrise.</b> It runs from two night-muhurtas before sunrise to one before, roughly 96 to 48 minutes. The Panchang tab shows today's time for Dallas.</li>
-        <li><b>Consistency beats length.</b> On a short-sleep day, do a 20-minute version instead of skipping.</li>
+        <li><b>Keep the order.</b> Exercise first, then the shower, then pranayama, meditation, japa, puja and reading. Each one settles the body for the next.</li>
+        <li><b>Start small.</b> Use the 20 or 30 minute length for the first weeks, then move to Full.</li>
+        <li><b>Surya Namaskar.</b> Begin with 3 or 4 rounds and add one round a week, up to 12. Say one of the twelve names of Surya at the start of each round.</li>
+        <li><b>Rama nama.</b> Keep one mantra for japa and stay with it. Count on a mala, or tap the circle in the Japa step and let the app count to 108.</li>
+        <li><b>Read a little every day.</b> Ten slow minutes of the Gita or the Ramayana is better than an hour once a week. Note the page so the tracker shows your progress.</li>
+        <li><b>The real Brahma muhurta moves with the sunrise.</b> It runs from two night-muhurtas before sunrise to one before, roughly 96 to 48 minutes. The Panchang tab shows today's time for your location.</li>
+        <li><b>Consistency beats length.</b> On a short-sleep day, do the 20 minute version instead of skipping. The Progress tab keeps your streak, year by year.</li>
       </ul>
     </section>
     <section class="panel">
-      <h2>How to do each step</h2>
+      <div class="row between">
+        <h2>How to do each step, with shlokas</h2>
+        <div class="seg" id="scriptSeg">
+          <button type="button" data-script="gu">ગુજરાતી</button>
+          <button type="button" data-script="deva">देवनागरी</button>
+        </div>
+      </div>
       <div id="howAll"></div>
+      <p class="note">The shlokas are the commonly recited versions. Wording varies a little between traditions, so follow your own family's or guru's version where it differs.</p>
     </section>
     <section class="panel">
-      <h2>Meditation through the week</h2>
+      <h2>Meditation through the week · ધ્યાન</h2>
       <div id="week"></div>
     </section>
     <p class="note">Care: skip Kapalbhati and Bhastrika if you are pregnant, have high blood pressure, heart disease, a hernia or recent abdominal surgery. Ease into cold showers if you have a heart condition. Stop any practice that makes you dizzy and breathe normally. This is a guide, not medical advice.</p>
   </section>
+
+  <!-- PROGRESS -->
+  <section class="view narrow" id="v-progress" hidden>
+    <section class="panel">
+      <div class="row between">
+        <h2>Progress · પ્રગતિ</h2>
+        <div class="row">
+          <button id="yPrev" type="button" class="small" aria-label="Previous year">◀</button>
+          <b id="yLbl"></b>
+          <button id="yNext" type="button" class="small" aria-label="Next year">▶</button>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="months" id="months"></div>
+      <p class="note">A day is marked when you finish the routine after at least 5 minutes of practice. Tap any past day to mark or unmark it by hand. Every year is kept; use the arrows to look back.</p>
+    </section>
+    <section class="panel">
+      <h2>Books · પુસ્તકો</h2>
+      <div class="row">
+        <input type="text" id="bkTitle" class="grow" placeholder="Book title, for example Bhagavad Gita" aria-label="Book title" maxlength="120">
+        <input type="number" id="bkTotal" min="0" placeholder="Pages" aria-label="Total pages">
+        <button id="bkAdd" type="button" class="primary">Add book</button>
+      </div>
+      <div id="books"></div>
+    </section>
+    <section class="panel">
+      <h2>Backup</h2>
+      <p class="note">Your routine, history and books are saved on this device only. To move them to another device, copy this text there, paste it into the same box and press Restore.</p>
+      <textarea id="bkText" aria-label="Backup text" spellcheck="false"></textarea>
+      <div class="row">
+        <button id="bkMake" type="button" class="small">Show my backup</button>
+        <button id="bkCopy" type="button" class="small">Copy</button>
+        <button id="bkRestore" type="button" class="small">Restore from this text</button>
+        <span class="status" id="bkStatus"></span>
+      </div>
+    </section>
+  </section>
 </div>
 
 <nav class="tabs" aria-label="Sections">
-  <button type="button" data-view="today"><span aria-hidden="true">◉</span>Today</button>
-  <button type="button" data-view="routine"><span aria-hidden="true">☰</span>Routine</button>
-  <button type="button" data-view="panchang"><span aria-hidden="true">☼</span>Panchang</button>
-  <button type="button" data-view="guide"><span aria-hidden="true">✎</span>Guide</button>
+  <button type="button" data-view="today">Today<small>આજ</small></button>
+  <button type="button" data-view="routine">Routine<small>દિનચર્યા</small></button>
+  <button type="button" data-view="panchang">Panchang<small>પંચાંગ</small></button>
+  <button type="button" data-view="guide">Guide<small>માર્ગદર્શન</small></button>
+  <button type="button" data-view="progress">Progress<small>પ્રગતિ</small></button>
 </nav>
 
 <script src="astronomy.js"></script>
+<script src="panchang-data.js"></script>
 <script>
 const W=[{l:'Work',secs:40,s:'work'},{l:'Rest',secs:20,s:'rest'}];
 const DEF=[
- {id:'wake',name:'Wake up and freshen',g:'Prepare',mins:4,on:1,
-  how:['Sit up on the bed, look at your open palms and say a short prayer or your sankalpa (intention) for the day.','Drink one or two glasses of warm water.','Brush your teeth, scrape the tongue and wash your face with cool water.','Use the toilet so the body is light for practice.'],
+ {id:'wake',name:'Wake up and freshen',gu:'જાગો અને તાજા થાઓ',g:'Prepare',mins:3,on:1,man:['karagre','samudra'],
+  how:['Sit up on the bed, look at your open palms and say the waking shloka below.','Before your feet touch the floor, ask the earth for pardon with the second shloka.','Drink one or two glasses of warm water.','Brush your teeth, scrape the tongue, wash your face with cool water and use the toilet.'],
   tip:'Do not check messages. Keep the phone on Do Not Disturb.'},
- {id:'walk',name:'Walk',g:'Body',mins:4,on:1,
+ {id:'walk',name:'Walk',gu:'ચાલવું',g:'Body',mins:3,on:1,
   how:['Walk at a brisk pace, indoors or outside, breathing through the nose.','Rotate the neck, shoulders, wrists, hips, knees and ankles, five times each way.','Finish with a few arm swings and gentle forward bends.'],
   tip:'This is the warm-up for the exercises that follow.'},
- {id:'surya',name:'Surya Namaskar',g:'Body',rounds:4,on:1,
-  how:['Pranamasana: stand tall, palms together at the chest. Exhale.','Hasta Uttanasana: inhale, raise the arms and arch back slightly.','Padahastasana: exhale, fold forward, hands beside the feet.','Ashwa Sanchalanasana: inhale, right leg back, knee down, look up.','Dandasana: left leg back into a straight plank.','Ashtanga Namaskara: exhale, lower knees, chest and chin to the floor.','Bhujangasana: inhale, slide forward and lift the chest into cobra.','Parvatasana: exhale, hips up into an inverted V.','Ashwa Sanchalanasana: inhale, right foot forward between the hands.','Padahastasana: exhale, left foot forward, fold.','Hasta Uttanasana: inhale, rise up, arms overhead.','Pranamasana: exhale, palms back at the chest.'],
-  tip:'That is one round. Lead with the left leg on the next round. Tap Round done after each round; the app moves on after the last one.'},
- {id:'dand',name:'Hanuman dand',g:'Body',mins:3,on:1,pat:W,
+ {id:'surya',name:'Surya Namaskar',gu:'સૂર્ય નમસ્કાર',g:'Body',rounds:4,on:1,man:['surya12'],
+  how:['Pranamasana: stand tall, palms together at the chest. Say the name of Surya for this round. Exhale.','Hasta Uttanasana: inhale, raise the arms and arch back slightly.','Padahastasana: exhale, fold forward, hands beside the feet.','Ashwa Sanchalanasana: inhale, right leg back, knee down, look up.','Dandasana: left leg back into a straight plank.','Ashtanga Namaskara: exhale, lower knees, chest and chin to the floor.','Bhujangasana: inhale, slide forward and lift the chest into cobra.','Parvatasana: exhale, hips up into an inverted V.','Ashwa Sanchalanasana: inhale, right foot forward between the hands.','Padahastasana: exhale, left foot forward, fold.','Hasta Uttanasana: inhale, rise up, arms overhead.','Pranamasana: exhale, palms back at the chest.'],
+  tip:'That is one round. Lead with the left leg on the next round. Tap Round done after each round; the app shows the next name and moves on after the last one.'},
+ {id:'dand',name:'Hanuman dand',gu:'હનુમાન દંડ',g:'Body',mins:2,on:1,pat:W,man:['manojavam'],
   how:['Start in the push-up position, hands under the shoulders.','Bring the right foot forward to the outside of the right hand, left leg straight behind.','Bend the elbows and lower the chest toward the floor, then press back up.','Send the right foot back, bring the left foot forward and repeat, alternating sides.'],
   tip:'Work for 40 seconds, rest for 20. If it is too hard, do a plain dand (hips high, dive forward into cobra, push back).'},
- {id:'push',name:'Push-ups',g:'Body',mins:3,on:1,pat:W,
+ {id:'push',name:'Push-ups',gu:'પુશ-અપ્સ',g:'Body',mins:2,on:1,pat:W,
   how:['Hands a little wider than the shoulders, body in one straight line from head to heels.','Lower until the chest is a fist above the floor, elbows about 45 degrees from the body.','Exhale and push back up without letting the hips sag.'],
   tip:'Work for 40 seconds, rest for 20. Drop to the knees to keep good form.'},
- {id:'plank',name:'Plank',g:'Body',mins:2,on:1,pat:[{l:'Hold',secs:45,s:'work'},{l:'Rest',secs:15,s:'rest'}],
+ {id:'plank',name:'Plank',gu:'પ્લેન્ક',g:'Body',mins:2,on:1,pat:[{l:'Hold',secs:45,s:'work'},{l:'Rest',secs:15,s:'rest'}],
   how:['Forearms on the floor, elbows under the shoulders.','Legs straight, toes tucked, body in one line.','Pull the navel in, squeeze the glutes and breathe steadily.'],
   tip:'Hold for 45 seconds, rest for 15.'},
- {id:'shower',name:'Cold shower',g:'Cleanse',mins:4,on:1,
-  how:['Rest for a minute so the breath settles after exercise.','Wet the feet, legs, hands and arms first, then the chest and back, and the head last.','Breathe slowly through the nose. Do not hold your breath.','Dry off and put on clean, loose clothes for pranayama and puja.'],
+ {id:'shower',name:'Cold shower',gu:'ઠંડા પાણીથી સ્નાન',g:'Cleanse',mins:4,on:1,man:['gange'],
+  how:['Rest for a minute so the breath settles after exercise.','Say the bathing shloka, then wet the feet, legs, hands and arms first, the chest and back next, and the head last.','Breathe slowly through the nose. Do not hold your breath.','Dry off and put on clean, loose clothes for pranayama and puja.'],
   tip:'New to cold water? Finish a normal shower with 30 seconds of cold and build up.'},
- {id:'kapal',name:'Kapalbhati',g:'Pranayama',mins:5,on:1,pat:[{l:'Sharp exhale',secs:45,s:'ticks'},{l:'Rest. Breathe normally',secs:15,s:'rest'}],
-  how:['Sit cross-legged or on a chair with the spine straight, hands on the knees.','Take a normal breath in.','Exhale sharply through the nose by snapping the navel toward the spine.','Let the inhale happen by itself. Keep about one stroke per second; the counter shows the pace.','After 45 seconds, rest with normal breathing for 15 seconds, then repeat.'],
+ {id:'kapal',name:'Kapalbhati',gu:'કપાલભાતિ',g:'Pranayama',mins:4,on:1,pat:[{l:'Sharp exhale',secs:45,s:'ticks'},{l:'Rest. Breathe normally',secs:15,s:'rest'}],
+  how:['Sit cross-legged or on a chair with the spine straight, hands on the knees. Chant Om three times to begin pranayama.','Take a normal breath in.','Exhale sharply through the nose by snapping the navel toward the spine.','Let the inhale happen by itself. Keep about one stroke per second; the counter shows the pace.','After 45 seconds, rest with normal breathing for 15 seconds, then repeat.'],
   tip:'Only the belly moves; keep the face and shoulders relaxed. Slow down if you feel dizzy.'},
- {id:'bhastrika',name:'Bhastrika',g:'Pranayama',mins:2,on:0,pat:[{l:'Strong inhale and exhale',secs:20,s:'ticks'},{l:'Rest. Breathe normally',secs:20,s:'rest'}],
+ {id:'bhastrika',name:'Bhastrika',gu:'ભસ્ત્રિકા',g:'Pranayama',mins:2,on:0,pat:[{l:'Strong inhale and exhale',secs:20,s:'ticks'},{l:'Rest. Breathe normally',secs:20,s:'rest'}],
   how:['Sit with the spine straight.','Inhale forcefully through the nose, filling the chest.','Exhale with the same force. Keep about one full breath per second.','After 20 seconds, rest with normal breathing for 20 seconds.'],
   tip:'Bellows breath. Do it before Kapalbhati if you include it.'},
- {id:'anulom',name:'Anulom Vilom',g:'Pranayama',mins:5,on:1,pat:[{l:'Inhale left',secs:4,s:'in'},{l:'Exhale right',secs:8,s:'out'},{l:'Inhale right',secs:4,s:'in'},{l:'Exhale left',secs:8,s:'out'}],
+ {id:'anulom',name:'Anulom Vilom',gu:'અનુલોમ વિલોમ',g:'Pranayama',mins:4,on:1,pat:[{l:'Inhale left',secs:4,s:'in'},{l:'Exhale right',secs:8,s:'out'},{l:'Inhale right',secs:4,s:'in'},{l:'Exhale left',secs:8,s:'out'}],
   how:['Sit straight. Fold the index and middle fingers of the right hand into the palm.','Close the right nostril with the thumb and inhale through the left for 4 counts.','Close the left nostril with the ring finger, open the right and exhale for 8 counts.','Inhale through the right for 4 counts.','Close the right, open the left and exhale for 8 counts. That is one round.'],
   tip:'The circle grows on the inhale and shrinks on the exhale. Keep the breath silent and smooth.'},
- {id:'bhramari',name:'Bhramari',g:'Pranayama',mins:3,on:1,pat:[{l:'Inhale',secs:4,s:'in'},{l:'Hum like a bee',secs:8,s:'out'}],
+ {id:'bhramari',name:'Bhramari',gu:'ભ્રામરી',g:'Pranayama',mins:2,on:1,pat:[{l:'Inhale',secs:4,s:'in'},{l:'Hum like a bee',secs:8,s:'out'}],
   how:['Sit straight with the eyes closed.','Close the ears by pressing the ear flaps with the thumbs or index fingers.','Inhale through the nose for 4 counts.','Exhale slowly with a steady "mmm" hum for 8 counts, mouth closed.','Feel the vibration in the head and face.'],
   tip:'Keep the hum low and even; do not strain the throat.'},
- {id:'ujjayi',name:'Ujjayi',g:'Pranayama',mins:3,on:1,pat:[{l:'Inhale',secs:5,s:'in'},{l:'Exhale',secs:5,s:'out'}],
+ {id:'ujjayi',name:'Ujjayi',gu:'ઉજ્જાયી',g:'Pranayama',mins:2,on:1,pat:[{l:'Inhale',secs:5,s:'in'},{l:'Exhale',secs:5,s:'out'}],
   how:['Sit straight with the mouth closed.','Narrow the back of the throat slightly, as if fogging a mirror with the mouth shut.','Inhale through the nose for 5 counts with a soft ocean sound.','Exhale for 5 counts with the same sound.'],
   tip:'The sound should be heard only by you.'},
- {id:'sheetali',name:'Sheetali',g:'Pranayama',mins:2,on:0,pat:[{l:'Inhale through the tongue',secs:4,s:'in'},{l:'Exhale through the nose',secs:6,s:'out'}],
+ {id:'sheetali',name:'Sheetali',gu:'શીતલી',g:'Pranayama',mins:2,on:0,pat:[{l:'Inhale through the tongue',secs:4,s:'in'},{l:'Exhale through the nose',secs:6,s:'out'}],
   how:['Roll the tongue into a tube and let it stick out slightly.','Inhale through the rolled tongue for 4 counts.','Close the mouth and exhale through the nose for 6 counts.'],
   tip:'Cooling breath for summer. If you cannot roll the tongue, inhale through closed teeth (Sheetkari). Skip it when you have a cold.'},
- {id:'shava',name:'Shavasana',g:'Rest',mins:2,on:0,
+ {id:'shava',name:'Shavasana',gu:'શવાસન',g:'Rest',mins:2,on:0,
   how:['Lie on your back, feet apart, arms away from the body, palms up.','Close the eyes and let the breath be natural.','Relax the body part by part from the toes to the head.'],
   tip:'Two minutes after pranayama lets the breath settle before meditation.'},
- {id:'med',name:'Meditation',g:'Dhyana',mins:10,on:1,how:[],tip:''},
- {id:'japa',name:'Japa',g:'Dhyana',mins:5,on:0,
-  how:['Hold the mala in the right hand, draped over the middle finger.','Move one bead with the thumb for each repetition of your mantra.','Do not cross the guru bead; turn the mala around and go back.'],
-  tip:'One full mala is 108 repetitions.'},
- {id:'puja',name:'Puja',g:'Puja',mins:8,on:1,
-  how:['Wash your hands and sit facing east or north.','Light the diya and the incense.','Offer water, flowers and prasad.','Chant your mantra, stotra or aarti.','Sit for a minute in silence, bow, and repeat your sankalpa for the day.'],
-  tip:'Follow your own family tradition; this is only an outline.'}
+ {id:'med',name:'Meditation',gu:'ધ્યાન',g:'Dhyana',mins:8,on:1,man:['guru','gayatri','asato','sarve'],how:[],tip:''},
+ {id:'japa',name:'Rama nama japa',gu:'રામ નામ જપ',g:'Japa',malas:1,on:1,man:['ramarameti','taraka','ramaya','apadam'],
+  how:['Sit steady with the eyes closed, or resting on an image of Shri Rama. Say the opening shloka once.','With a mala: hold it in the right hand over the middle finger and move one bead with the thumb for each repetition. The index finger does not touch the beads.','Without a mala: tap the circle once for each repetition. The app counts to 108.','Repeat the name softly aloud, in a whisper, or silently in the mind, and listen to it.','Do not cross the guru bead. At the end of a mala, turn it around and go back.','Close with the last shloka and sit quietly for a moment.'],
+  tip:'One mala is 108 repetitions. Using a real mala? Tap Mala done when you reach the guru bead.'},
+ {id:'puja',name:'Puja',gu:'પૂજા',g:'Puja',mins:6,on:1,man:['vakratunda','shubham','tvameva'],
+  how:['Wash your hands and sit facing east or north.','Remember Ganesha first, then light the diya and the incense with the lamp shloka.','Offer water, flowers and prasad.','Chant your mantra, stotra or aarti.','Sit for a minute in silence, bow with the closing shloka, and repeat your sankalpa for the day.'],
+  tip:'Follow your own family tradition; this is only an outline.'},
+ {id:'read',name:'Book reading',gu:'સ્વાધ્યાય · વાંચન',g:'Svadhyaya',mins:6,on:1,man:['sahana'],
+  how:['Sit upright with good light and say the prayer before reading.','Read a small portion slowly: a few verses with their meaning, or a few pages.','Stop on one line that speaks to you and think how you will use it today.','Enter the page you reached below so the book tracker stays current.'],
+  tip:'Good morning reading: Bhagavad Gita, Ramcharitmanas, Valmiki Ramayana or Shrimad Bhagavatam. Add your books in Progress.'}
 ];
+const PRE={30:{wake:2,surya:3,shower:3,kapal:3,anulom:3,med:5,japa:1,puja:3},20:{wake:2,surya:3,anulom:3,med:4,japa:1}};
+const MAN={
+ karagre:{t:'On waking, looking at the palms',d:'कराग्रे वसते लक्ष्मीः करमध्ये सरस्वती ।\nकरमूले तु गोविन्दः प्रभाते करदर्शनम् ॥',r:'Karagre vasate Lakshmih, karamadhye Sarasvati; karamule tu Govindah, prabhate karadarshanam.',m:'Lakshmi lives at the fingertips, Sarasvati in the middle of the palm and Govinda at its base, so look at your palms in the morning.'},
+ samudra:{t:'Before the feet touch the floor',d:'समुद्रवसने देवि पर्वतस्तनमण्डले ।\nविष्णुपत्नि नमस्तुभ्यं पादस्पर्शं क्षमस्व मे ॥',r:'Samudra-vasane Devi, parvata-stana-mandale; Vishnu-patni namastubhyam, pada-sparsham kshamasva me.',m:'Mother Earth, clothed by the oceans and adorned with mountains, consort of Vishnu, I bow to you. Forgive me for touching you with my feet.'},
+ gange:{t:'While bathing',d:'गङ्गे च यमुने चैव गोदावरि सरस्वति ।\nनर्मदे सिन्धु कावेरि जलेऽस्मिन् सन्निधिं कुरु ॥',r:'Gange cha Yamune chaiva, Godavari Sarasvati; Narmade Sindhu Kaveri, jale’smin sannidhim kuru.',m:'O Ganga, Yamuna, Godavari, Sarasvati, Narmada, Sindhu and Kaveri, be present in this water.'},
+ manojavam:{t:'To Hanuman, before the dands',d:'मनोजवं मारुततुल्यवेगं जितेन्द्रियं बुद्धिमतां वरिष्ठम् ।\nवातात्मजं वानरयूथमुख्यं श्रीरामदूतं शरणं प्रपद्ये ॥',r:'Manojavam maruta-tulya-vegam, jitendriyam buddhimatam varishtham; vatatmajam vanara-yutha-mukhyam, Shri-Rama-dutam sharanam prapadye.',m:'I take refuge in Hanuman, swift as the mind and the wind, master of the senses, foremost among the wise, son of the wind god, chief of the vanaras and messenger of Shri Rama.'},
+ guru:{t:'To the guru, as you sit',d:'गुरुर्ब्रह्मा गुरुर्विष्णुः गुरुर्देवो महेश्वरः ।\nगुरुः साक्षात् परब्रह्म तस्मै श्रीगुरवे नमः ॥',r:'Gurur Brahma gurur Vishnuh, gurur devo Maheshvarah; guruh sakshat Parabrahma, tasmai Shri-gurave namah.',m:'The guru is Brahma, Vishnu and Shiva; the guru is the supreme reality itself. To that guru I bow.'},
+ gayatri:{t:'Gayatri mantra, three times',d:'ॐ भूर्भुवः स्वः ।\nतत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि ।\nधियो यो नः प्रचोदयात् ॥',r:'Om bhur bhuvah svah; tat savitur varenyam, bhargo devasya dhimahi; dhiyo yo nah prachodayat.',m:'We meditate on the adorable light of the divine Sun. May it awaken our understanding.'},
+ asato:{t:'Before closing the eyes',d:'ॐ असतो मा सद्गमय ।\nतमसो मा ज्योतिर्गमय ।\nमृत्योर्मा अमृतं गमय ।\nॐ शान्तिः शान्तिः शान्तिः ॥',r:'Om asato ma sad gamaya; tamaso ma jyotir gamaya; mrityor ma amritam gamaya. Om shantih shantih shantih.',m:'Lead me from the unreal to the real, from darkness to light, from death to immortality. Om peace, peace, peace.'},
+ sarve:{t:'After the closing bell',d:'ॐ सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः ।\nसर्वे भद्राणि पश्यन्तु मा कश्चिद् दुःखभाग्भवेत् ॥\nॐ शान्तिः शान्तिः शान्तिः ॥',r:'Om sarve bhavantu sukhinah, sarve santu niramayah; sarve bhadrani pashyantu, ma kashchid duhkha-bhag bhavet. Om shantih shantih shantih.',m:'May all be happy, may all be free from illness, may all see what is good, may no one suffer. Om peace, peace, peace.'},
+ ramarameti:{t:'Before japa: the greatness of the name',d:'श्रीराम राम रामेति रमे रामे मनोरमे ।\nसहस्रनाम तत्तुल्यं रामनाम वरानने ॥',r:'Shri Rama Rama Rameti, rame Rame manorame; sahasranama tat tulyam, Rama-nama varanane.',m:'Shiva tells Parvati: I delight in repeating Rama, Rama, Rama. The name of Rama is equal to the thousand names of Vishnu.'},
+ taraka:{t:'The japa mantra: Rama Taraka mantra, 13 syllables',d:'श्री राम जय राम जय जय राम',r:'Shri Ram Jai Ram Jai Jai Ram',m:'Glory to Shri Rama, victory to Rama, victory, victory to Rama. You can also repeat the single name: Ram.'},
+ ramaya:{t:'Salutation to Shri Rama',d:'रामाय रामभद्राय रामचन्द्राय वेधसे ।\nरघुनाथाय नाथाय सीतायाः पतये नमः ॥',r:'Ramaya Ramabhadraya, Ramachandraya vedhase; Raghunathaya nathaya, Sitayah pataye namah.',m:'Salutations to Rama, Ramabhadra, Ramachandra, the creator, lord of the Raghus, the protector and husband of Sita.'},
+ apadam:{t:'After japa',d:'आपदामपहर्तारं दातारं सर्वसम्पदाम् ।\nलोकाभिरामं श्रीरामं भूयो भूयो नमाम्यहम् ॥',r:'Apadam apahartaram, dataram sarva-sampadam; lokabhiramam Shri-Ramam, bhuyo bhuyo namamy aham.',m:'Again and again I bow to Shri Rama, who removes all troubles, gives every blessing and delights the world.'},
+ vakratunda:{t:'To Ganesha, to begin the puja',d:'वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ ।\nनिर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥',r:'Vakratunda mahakaya, surya-koti-samaprabha; nirvighnam kuru me deva, sarva-karyeshu sarvada.',m:'O Ganesha of the curved trunk and mighty body, bright as ten million suns, remove the obstacles from all my work, always.'},
+ shubham:{t:'While lighting the diya',d:'शुभं करोति कल्याणम् आरोग्यं धनसम्पदा ।\nशत्रुबुद्धिविनाशाय दीपज्योतिर्नमोऽस्तु ते ॥',r:'Shubham karoti kalyanam, arogyam dhana-sampada; shatru-buddhi-vinashaya, dipa-jyotir namo’stu te.',m:'I bow to the light of the lamp, which brings good fortune, health and prosperity and destroys hostile thoughts.'},
+ tvameva:{t:'Surrender, at the end of puja',d:'त्वमेव माता च पिता त्वमेव त्वमेव बन्धुश्च सखा त्वमेव ।\nत्वमेव विद्या द्रविणं त्वमेव त्वमेव सर्वं मम देव देव ॥',r:'Tvameva mata cha pita tvameva, tvameva bandhush cha sakha tvameva; tvameva vidya dravinam tvameva, tvameva sarvam mama deva deva.',m:'You alone are my mother and father, my relative and friend, my knowledge and my wealth. You are my everything, O Lord of lords.'},
+ sahana:{t:'Before reading',d:'ॐ सह नाववतु । सह नौ भुनक्तु ।\nसह वीर्यं करवावहै ।\nतेजस्वि नावधीतमस्तु मा विद्विषावहै ।\nॐ शान्तिः शान्तिः शान्तिः ॥',r:'Om saha navavatu, saha nau bhunaktu, saha viryam karavavahai; tejasvi navadhitam astu, ma vidvishavahai. Om shantih shantih shantih.',m:'May we be protected and nourished together, may we work with vigour, may our study be bright, and may there be no ill will between us. Om peace, peace, peace.'}
+};
+const SURYA=[['मित्राय','Mitraya','friend of all'],['रवये','Ravaye','the shining one'],['सूर्याय','Suryaya','who sets all in motion'],['भानवे','Bhanave','the illuminator'],['खगाय','Khagaya','who moves through the sky'],['पूष्णे','Pushne','the nourisher'],['हिरण्यगर्भाय','Hiranyagarbhaya','the golden source'],['मरीचये','Marichaye','lord of the dawn rays'],['आदित्याय','Adityaya','son of Aditi'],['सवित्रे','Savitre','the awakener'],['अर्काय','Arkaya','worthy of praise'],['भास्कराय','Bhaskaraya','giver of light']];
 // index = Date.getDay(): Sunday 0 ... Saturday 6
 const WEEK=[
  {d:'Sun',c:'Sahasrara',area:'crown of the head',m:'silent Om',f:246.9,t:'Open awareness',how:'Rest attention at the crown. Let sounds and thoughts pass without following them.'},
@@ -326,26 +452,68 @@ const WEEK=[
  {d:'Sat',c:'Ajna',area:'between the eyebrows',m:'Om',f:220,t:'Dharana (one-point focus)',how:'Hold attention between the eyebrows. Repeat Om silently with each exhale.'}
 ];
 const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toGu=s=>s.replace(/[ऀ-ॣ०-ॿ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x180));
 const today=()=>WEEK[new Date().getDay()];
+
+/* ---------- saved settings and history (this device only) ---------- */
+let S={order:DEF.map(s=>s.id),mins:{},on:{},rounds:{},alarm:'03:30',vol:0.7,tab:'today',mode:'full',stepBell:true,script:'gu',
+  loc:{name:'Dallas, Texas, United States',lat:32.783,lon:-96.807,tz:'America/Chicago',cc:'US',st:'Texas',auto:true}};
+let H={days:{},books:[],cur:''};
+try{const j=JSON.parse(localStorage.getItem('bms3')||'null');if(j)S=Object.assign(S,j);}catch(e){}
+try{const j=JSON.parse(localStorage.getItem('bms-hist')||'null');if(j&&j.days)H=Object.assign(H,j);}catch(e){}
+function tidy(){
+  S.order=(S.order||[]).filter(id=>DEF.some(s=>s.id===id));
+  DEF.forEach(s=>{if(!S.order.includes(s.id))S.order.push(s.id)});
+  if(!PRE[S.mode])S.mode='full';
+  if(!Array.isArray(H.books))H.books=[];
+  if(!H.days||typeof H.days!=='object')H.days={};
+}
+tidy();
+const save=()=>{try{localStorage.setItem('bms3',JSON.stringify(S))}catch(e){}};
+const saveH=()=>{try{localStorage.setItem('bms-hist',JSON.stringify(H))}catch(e){}};
+const byId=id=>DEF.find(s=>s.id===id);
+const all=()=>S.order.map(byId).map(s=>{
+  const o={...s},pre=PRE[S.mode],cnt=s.rounds||s.malas;
+  if(pre){o.on=s.id in pre;if(cnt)o.n=pre[s.id]??cnt;else o.mins=pre[s.id]??s.mins;}
+  else{o.on=S.on[s.id]??!!s.on;if(cnt)o.n=S.rounds[s.id]??cnt;else o.mins=S.mins[s.id]??s.mins;}
+  if(cnt)o.mins=Math.ceil(o.n*(s.rounds?1.5:6));
+  return o;});
+const active=()=>all().filter(s=>s.on);
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+function dayRec(d,make){
+  const y=String(d.getFullYear()),k=pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  if(!H.days[y]){if(!make)return null;H.days[y]={};}
+  if(!H.days[y][k]){if(!make)return null;H.days[y][k]={};}
+  return H.days[y][k];
+}
+
+/* ---------- shlokas ---------- */
+const sk=d=>(S.script==='deva'?d:toGu(d)).replace(/\n/g,'<br>');
+function manHtml(key){
+  if(key==='surya12')return '<div class="mantra"><b>The twelve names of Surya, one at the start of each round</b><ol>'+SURYA.map(x=>'<li>'+sk('ॐ '+x[0]+' नमः')+' · <i>Om '+x[1]+' Namah</i> · '+x[2]+'</li>').join('')+'</ol></div>';
+  const m=MAN[key];
+  return '<div class="mantra"><b>'+m.t+'</b><p class="sk">'+sk(m.d)+'</p><p class="rom">'+m.r+'</p><p class="tip">'+m.m+'</p></div>';
+}
 function howOf(s){
   if(s.id!=='med')return s;
   const w=today();
-  return {how:['Sit on a cushion or chair with the spine straight, hands on the knees or in the lap, eyes closed.','Take three slow breaths and let the body become still.','Today is '+w.t+'. Bring your attention to the '+w.area+' ('+w.c+').',w.how,'When the mind wanders, come back to the drone and the mantra: '+w.m+'.','A soft bell rings every 5 minutes. After the closing bell, sit quietly for a few breaths.'],
+  return {how:['Sit on a cushion or chair with the spine straight, hands on the knees or in the lap. Say the opening shlokas below.','Close the eyes, take three slow breaths and let the body become still.','Today is '+w.t+'. Bring your attention to the '+w.area+' ('+w.c+').',w.how,'When the mind wanders, come back to the drone and the mantra: '+w.m+'.','A soft bell rings every 5 minutes. After the closing bell, say the closing prayer and sit quietly for a few breaths.'],
     tip:'The drone changes pitch each day of the week, one for each focus area.'};
 }
-const howHtml=s=>{const h=howOf(s);return '<ol>'+h.how.map(x=>'<li>'+x+'</li>').join('')+'</ol>'+(h.tip?'<p class="tip">'+h.tip+'</p>':'');};
+function howHtml(s,player){
+  const h=howOf(s);
+  let x='<ol>'+h.how.map(t=>'<li>'+t+'</li>').join('')+'</ol>'+(h.tip?'<p class="tip">'+h.tip+'</p>':'');
+  if(player&&s.id==='read'){
+    const b=H.books.find(b=>b.id===H.cur&&!b.fin)||H.books.find(b=>!b.fin);
+    x+=b?'<div class="row"><label class="mins" for="readPg">'+esc(b.t)+' · page reached</label><input type="number" id="readPg" min="0" value="'+(b.pg||0)+'"><button type="button" class="small" id="readSave" data-book="'+b.id+'">Save page</button><span class="status" id="readOk"></span></div>'
+        :'<p class="tip">No book yet. Add the book you are reading in Progress, under Books.</p>';
+  }
+  return x+(s.man||[]).map(manHtml).join('');
+}
 
-/* ---------- saved settings (this device only) ---------- */
-let S={order:DEF.map(s=>s.id),mins:{},on:{},rounds:{},alarm:'03:30',vol:0.7,tab:'today'};
-try{const j=JSON.parse(localStorage.getItem('bms2')||'null');if(j)S=Object.assign(S,j);}catch(e){}
-S.order=S.order.filter(id=>DEF.some(s=>s.id===id));
-DEF.forEach(s=>{if(!S.order.includes(s.id))S.order.push(s.id)});
-const save=()=>{try{localStorage.setItem('bms2',JSON.stringify(S))}catch(e){}};
-const byId=id=>DEF.find(s=>s.id===id);
-const all=()=>S.order.map(byId).map(s=>{const o={...s,on:S.on[s.id]??!!s.on};if(s.rounds){o.rounds=S.rounds[s.id]??s.rounds;o.mins=Math.ceil(o.rounds*1.5);}else o.mins=S.mins[s.id]??s.mins;return o;});
-const active=()=>all().filter(s=>s.on);
-
-/* ---------- sound: alarm and meditation only (generated, no files) ---------- */
+/* ---------- sound: alarm, meditation and one soft bell when a timed step ends (generated, no files) ---------- */
 let ac,master,drone=null;
 function audio(){
   if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=S.vol;master.connect(ac.destination);}
@@ -379,17 +547,21 @@ function keepAwake(){try{navigator.wakeLock&&navigator.wakeLock.request('screen'
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(running||armed))keepAwake();});
 
 /* ---------- guided session ---------- */
-let curId=null,elapsed=0,extra=0,roundsDone=0,done=false,lastT=0,lastKey='',lastSec=-1,lastMark=0,howFor='';
+let curId=null,elapsed=0,extra=0,roundsDone=0,japa=0,sess=0,done=false,lastT=0,lastKey='',lastSec=-1,lastMark=0,howFor='';
 const cur=()=>{const a=active();return a.find(s=>s.id===curId)||a[0];};
 const stepSecs=s=>s.mins*60+extra;
 function pulse(scale,secs){const p=$('pulse');p.style.transitionDuration=secs+'s';p.style.transform='scale('+scale+')';}
-function startMed(){bell(528);setTimeout(()=>{if(running&&curId==='med')droneOn(today().f)},2500);}
-function leave(){if(curId==='med'&&running&&elapsed>1){droneOff();bell(396,7,.3);}else droneOff();}
-function enter(s){
-  if(s.id!==curId)leave();else droneOff();
-  curId=s.id;elapsed=0;extra=0;roundsDone=0;lastKey='';lastSec=-1;lastMark=0;done=false;
+function startMed(withBell){if(withBell)bell(528);setTimeout(()=>{if(running&&curId==='med')droneOn(today().f)},2500);}
+// meditation rings its closing bell only when it ends on its own timer; returns true when that bell covered the change
+function leave(auto){if(auto&&curId==='med'&&running&&elapsed>1){droneOff();bell(396,7,.3);return true;}droneOff();return false;}
+// auto = the step ended by its own timer (the only case that may ring the step bell; Back and Next step never do)
+function enter(s,auto){
+  let rang=false;
+  if(s.id!==curId)rang=leave(auto);else droneOff();
+  curId=s.id;elapsed=0;extra=0;roundsDone=0;japa=0;lastKey='';lastSec=-1;lastMark=0;done=false;
   $('cue').textContent='';pulse(.55,.3);
-  if(running&&s.id==='med')startMed();
+  if(running&&s.id==='med'){startMed(auto);rang=true;}
+  if(auto&&running&&S.stepBell&&!rang)bell(660,3,.22);
   drawList();draw();
 }
 function play(){
@@ -397,22 +569,28 @@ function play(){
   audio();keepAwake();stopRing();
   const fresh=done||!curId||!a.some(s=>s.id===curId);
   running=true;
-  if(fresh){curId=null;enter(a[0]);}
-  else if(curId==='med'){if(elapsed<1)startMed();else droneOn(today().f);}
+  if(fresh){curId=null;sess=0;enter(a[0]);}
+  else if(curId==='med'){if(elapsed<1)startMed(true);else droneOn(today().f);}
   lastT=performance.now();draw();
 }
 function pause(){running=false;droneOff();draw();}
-function go(dir){
+function go(dir,auto){
   const a=active(),i=a.findIndex(s=>s.id===cur().id)+dir;
-  if(i>=a.length){finish();return;}
-  enter(a[Math.max(0,i)]);
+  if(i>=a.length){finish(auto);return;}
+  enter(a[Math.max(0,i)],auto);
 }
-function finish(){leave();running=false;done=true;pulse(.55,.3);$('cue').textContent='';draw();drawList();}
+function finish(auto){
+  const rang=leave(auto);
+  if(auto&&S.stepBell&&!rang){bell(528,5,.25);setTimeout(()=>bell(660,6,.25),1200);}
+  running=false;done=true;pulse(.55,.3);$('cue').textContent='';
+  const r=dayRec(new Date(),true);r.m=(r.m||0)+Math.round(sess/60);if(sess>=300)r.d=1;sess=0;saveH();
+  draw();drawList();drawProgress();
+}
 function loop(){
   const now=performance.now(),dt=(now-lastT)/1000;lastT=now;
   if(running){
-    const s=cur();elapsed+=dt;
-    if(!s.rounds&&elapsed>=stepSecs(s)){go(1);}
+    const s=cur();elapsed+=dt;sess+=Math.min(dt,5);
+    if(!s.n&&elapsed>=stepSecs(s)){go(1,true);}
     else{
       if(s.pat){
         const cyc=s.pat.reduce((n,p)=>n+p.secs,0),pos=elapsed%cyc;let acc=0,pi=0;
@@ -432,43 +610,65 @@ function loop(){
   }
   checkAlarm();
 }
+function tapJapa(){
+  const s=cur();if(!s||!s.malas||done)return;
+  if(!running)play();
+  japa++;const r=dayRec(new Date(),true);r.j=(r.j||0)+1;saveH();pulse(japa%2?.72:.86,.12);
+  if(japa>=108)malaDone(0);else draw();
+}
+function malaDone(add){
+  const s=cur();
+  if(add){const r=dayRec(new Date(),true);r.j=(r.j||0)+add;saveH();}
+  japa=0;roundsDone++;if(S.stepBell&&running)bell(528,4,.28);
+  if(roundsDone>=s.n)go(1);else draw();
+}
 const mmss=n=>{n=Math.max(0,Math.ceil(n));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
 function draw(){
   const a=active(),s=cur();
-  if(!s){$('stepName').textContent='Turn on at least one step in Routine';$('how').innerHTML='';return;}
-  const i=a.findIndex(x=>x.id===s.id),tot=stepSecs(s),started=elapsed>0||roundsDone>0;
+  if(!s){$('stepName').textContent='Turn on at least one step in Routine';$('stepGu').textContent='';$('how').innerHTML='';return;}
+  const i=a.findIndex(x=>x.id===s.id),tot=stepSecs(s),started=elapsed>0||roundsDone>0||japa>0;
   $('groupLbl').textContent=done?'Complete':(running?s.g:(started?'Paused':'Ready'));
   $('stepName').textContent=done?'Hari Om. Sadhana complete.':s.name;
-  $('clock').textContent=done?'0:00':(s.rounds?(Math.min(roundsDone+1,s.rounds)+' / '+s.rounds):mmss(tot-elapsed));
-  $('count').textContent=done?'':('Step '+(i+1)+' of '+a.length+(s.rounds?' · round':''));
-  const key=done?'done':s.id+new Date().getDay();
-  if(key!==howFor){howFor=key;$('how').innerHTML=done?'':howHtml(s);}
-  if(!done&&!s.pat)$('cue').textContent=s.id==='med'?('Mantra: '+today().m):(s.rounds?'12 postures, then tap Round done':'');
-  const frac=s.rounds?roundsDone/s.rounds:Math.min(1,elapsed/tot);
+  $('stepGu').textContent=done?'હરિ ૐ':s.gu;
+  $('clock').textContent=done?'0:00':(s.malas?japa:(s.rounds?(Math.min(roundsDone+1,s.n)+' / '+s.n):mmss(tot-elapsed)));
+  $('count').textContent=done?'':(s.malas?('of 108 · mala '+Math.min(roundsDone+1,s.n)+' of '+s.n):('Step '+(i+1)+' of '+a.length+(s.rounds?' · round':'')));
+  $('ring').classList.toggle('tap',!!s.malas&&!done);
+  const key=done?'done':s.id+new Date().getDay()+S.script;
+  if(key!==howFor){howFor=key;$('how').innerHTML=done?'':howHtml(s,true);}
+  if(!done&&!s.pat){
+    const sn=SURYA[Math.min(roundsDone,s.n-1)%12];
+    $('cue').innerHTML=s.id==='med'?('Mantra: '+today().m):s.rounds?(sk('ॐ '+sn[0]+' नमः')+' · Om '+sn[1]+' Namah'):s.malas?(sk(MAN.taraka.d)+'<br><small>Tap the circle for each name</small>'):'';
+  }
+  const frac=s.malas?(roundsDone+japa/108)/s.n:s.rounds?roundsDone/s.n:Math.min(1,elapsed/tot);
   $('prog').style.strokeDashoffset=done?339.3:(339.3*frac).toFixed(1);
   const before=a.slice(0,i).reduce((n,x)=>n+x.mins*60,0),whole=a.reduce((n,x)=>n+x.mins*60,0);
   $('overall').style.width=(done?100:Math.min(100,100*(before+frac*s.mins*60)/whole)).toFixed(1)+'%';
   $('playBtn').textContent=running?'Pause':(done?'Start again':(started?'Resume':'Start'));
-  $('plusBtn').textContent=s.rounds&&!done?'Round done':'+1 min';
+  $('plusBtn').textContent=done?'+1 min':s.malas?'Mala done':s.rounds?'Round done':'+1 min';
 }
 
 /* ---------- routine editor ---------- */
 const hm=t=>{const hh=Math.floor(t/60)%24,mm=t%60;return ((hh%12)||12)+':'+String(mm).padStart(2,'0')+(hh<12?' AM':' PM');};
 function clockAt(mins){const [h,m]=S.alarm.split(':').map(Number);return hm((h*60+m+mins)%1440);}
 function drawList(){
-  let t=0;const c=cur();
+  let t=0;const c=cur(),lock=S.mode!=='full'?' disabled':'';
   $('steps').innerHTML=all().map((s,i,arr)=>{
     const at=s.on?clockAt(t):'off';if(s.on)t+=s.mins;
-    const num=s.rounds
-      ?'<label class="mins"><input type="number" id="rnd-'+s.id+'" data-rnd="'+s.id+'" min="1" max="108" value="'+s.rounds+'" aria-label="Rounds of '+s.name+'">rounds</label>'
-      :'<label class="mins"><input type="number" id="min-'+s.id+'" data-min="'+s.id+'" min="1" max="90" value="'+s.mins+'" aria-label="Minutes for '+s.name+'">min</label>';
+    const unit=s.rounds?'rounds':'malas';
+    const num=s.n
+      ?'<label class="mins"><input type="number" id="rnd-'+s.id+'" data-rnd="'+s.id+'" min="1" max="108" value="'+s.n+'" aria-label="'+unit+' of '+s.name+'"'+lock+'>'+unit+'</label>'
+      :'<label class="mins"><input type="number" id="min-'+s.id+'" data-min="'+s.id+'" min="1" max="90" value="'+s.mins+'" aria-label="Minutes for '+s.name+'"'+lock+'>min</label>';
     return '<li class="'+(s.on?'':'off')+(c&&c.id===s.id&&!done?' cur':'')+'">'+
-      '<input type="checkbox" id="on-'+s.id+'" data-on="'+s.id+'"'+(s.on?' checked':'')+' aria-label="Include '+s.name+'">'+
-      '<button type="button" class="nm" data-go="'+s.id+'" title="Jump to this step"><b>'+s.name+'</b><span class="at">'+at+' · '+s.g+(s.rounds?' · about '+s.mins+' min':'')+'</span></button>'+num+
+      '<input type="checkbox" id="on-'+s.id+'" data-on="'+s.id+'"'+(s.on?' checked':'')+lock+' aria-label="Include '+s.name+'">'+
+      '<button type="button" class="nm" data-go="'+s.id+'" title="Jump to this step"><b>'+s.name+' · '+s.gu+'</b><span class="at">'+at+' · '+s.g+(s.n?' · about '+s.mins+' min':'')+'</span></button>'+num+
       '<span class="mv"><button type="button" class="small" data-up="'+s.id+'" aria-label="Move '+s.name+' up"'+(i===0?' disabled':'')+'>↑</button>'+
       '<button type="button" class="small" data-dn="'+s.id+'" aria-label="Move '+s.name+' down"'+(i===arr.length-1?' disabled':'')+'>↓</button></span></li>';
   }).join('');
   $('totalLine').textContent=t+' min · '+clockAt(0)+' to '+clockAt(t);
+  $('routineNote').textContent=S.mode==='full'
+    ?'Tick a step to include it, set its minutes (rounds for Surya Namaskar, malas for japa), move it with the arrows, or tap its name to jump to it.'
+    :'The '+S.mode+' minute version is on, so steps and times are fixed. Switch Length back to Full on the Today tab to edit your own routine.';
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
 }
 $('steps').addEventListener('change',e=>{
   const d=e.target.dataset;
@@ -484,7 +684,8 @@ $('steps').addEventListener('click',e=>{
   const i=S.order.indexOf(id),j=i+(d.up?-1:1);if(j<0||j>=S.order.length)return;
   [S.order[i],S.order[j]]=[S.order[j],S.order[i]];save();drawList();draw();
 });
-$('resetBtn').onclick=()=>{S.order=DEF.map(s=>s.id);S.mins={};S.on={};S.rounds={};save();drawList();draw();};
+$('resetBtn').onclick=()=>{S.order=DEF.map(s=>s.id);S.mins={};S.on={};S.rounds={};S.mode='full';save();drawList();draw();};
+$('modeSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.mode=b.dataset.mode;save();howFor='';drawList();draw();};
 
 /* ---------- alarm ---------- */
 let target=0,ringTimer=null,ringN=0;
@@ -520,40 +721,44 @@ $('alarmTime').onchange=e=>{if(e.target.value){S.alarm=e.target.value;save();if(
 
 /* ---------- controls ---------- */
 $('playBtn').onclick=()=>running?pause():play();
-$('nextBtn').onclick=()=>{if(done)return;go(1);};
-$('prevBtn').onclick=()=>{if(done){done=false;curId=null;enter(active()[0]);}else go(elapsed>5||roundsDone>0?0:-1);};
+$('nextBtn').onclick=()=>{if(!done)go(1);};
+$('prevBtn').onclick=()=>{if(done){done=false;curId=null;enter(active()[0]);}else go(elapsed>5||roundsDone>0||japa>0?0:-1);};
 $('plusBtn').onclick=()=>{
   const s=cur();if(!s||done)return;
-  if(s.rounds){roundsDone++;if(roundsDone>=s.rounds)go(1);else draw();}
+  if(s.malas)malaDone(108-japa);
+  else if(s.rounds){roundsDone++;if(roundsDone>=s.n)go(1);else draw();}
   else{extra+=60;draw();}
 };
+$('ring').onclick=tapJapa;
 $('vol').oninput=e=>{S.vol=+e.target.value;if(master)master.gain.value=S.vol;save();};
+$('stepBell').onchange=e=>{S.stepBell=e.target.checked;save();};
 $('testBtn').onclick=()=>{bell(528);droneOn(today().f);setTimeout(()=>{if(!(running&&curId==='med'))droneOff()},6000);};
+$('how').addEventListener('click',e=>{
+  if(e.target.id!=='readSave')return;
+  setPage(e.target.dataset.book,parseInt($('readPg').value)||0);$('readOk').textContent='Saved.';
+});
 
-/* ---------- Panchang for Dallas, TX (same method as the Morning Briefing app) ---------- */
+/* ---------- Panchang (same method as the Morning Briefing app, for any location) ---------- */
 const PZ=(()=>{
-  const LAT=32.7767,LON=-96.797,TZ='America/Chicago';
   const DAY=864e5,HOUR=36e5,MIN=6e4,J2000=Date.UTC(2000,0,1,12);
-  const TITHI=['Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Purnima'];
-  const MASA=['Chaitra','Vaishakh','Jeth','Ashadh','Shravan','Bhadarvo','Aso','Kartak','Magshar','Posh','Maha','Fagan'];
-  const NAK=['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
-  const YOGA=['Vishkambha','Priti','Ayushman','Saubhagya','Shobhana','Atiganda','Sukarma','Dhriti','Shula','Ganda','Vriddhi','Dhruva','Vyaghata','Harshana','Vajra','Siddhi','Vyatipata','Variyan','Parigha','Shiva','Siddha','Sadhya','Shubha','Shukla','Brahma','Indra','Vaidhriti'];
-  const KMOV=['Bava','Balava','Kaulava','Taitila','Garaja','Vanija','Vishti (Bhadra)'],KFIX={0:'Kimstughna',57:'Shakuni',58:'Chatushpada',59:'Naga'};
-  const VARA=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];      // Monday = 0
-  const CHOG={udveg:['Udveg','bad'],char:['Char','neutral'],labh:['Labh','good'],amrit:['Amrit','good'],kaal:['Kaal','bad'],shubh:['Shubh','good'],rog:['Rog','bad']};
-  const DAY_CYCLE=['udveg','char','labh','amrit','kaal','shubh','rog'],NIGHT_CYCLE=['shubh','amrit','char','rog','kaal','labh','udveg'];
-  const DAY_START=['amrit','rog','labh','shubh','char','kaal','udveg'],NIGHT_START=['char','kaal','udveg','amrit','rog','labh','shubh'];
-  const RAHU=[2,7,5,6,4,3,8],YAMA=[4,3,2,1,7,6,5],GULIKA=[6,5,4,3,2,1,7];
-
-  const dfmt=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
-  const tfmt=new Intl.DateTimeFormat('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'});
-  const dnOf=ms=>{const o={};dfmt.formatToParts(new Date(ms)).forEach(p=>o[p.type]=+p.value);return Math.floor(Date.UTC(o.year,o.month-1,o.day)/DAY);};
+  let L,dfmt,tfmt,cache,lun;
+  function setLoc(l){
+    let tz=l.tz;
+    try{new Intl.DateTimeFormat('en-US',{timeZone:tz});}catch(e){tz=Intl.DateTimeFormat().resolvedOptions().timeZone;}
+    L={lat:l.lat,lon:l.lon,tz};cache=new Map();lun=[];
+    dfmt=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+    tfmt=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'});
+  }
+  const parts=ms=>{const o={};dfmt.formatToParts(new Date(ms)).forEach(p=>{if(p.type!=='literal')o[p.type]=+p.value;});return o;};
+  const dnOf=ms=>{const o=parts(ms);return Math.floor(Date.UTC(o.year,o.month-1,o.day)/DAY);};
+  const offset=ms=>{const o=parts(ms);return Date.UTC(o.year,o.month-1,o.day,o.hour%24,o.minute,o.second)-Math.floor(ms/1000)*1000;};
+  const start=dn=>{const t=dn*DAY-offset(dn*DAY);return dn*DAY-offset(t);};       // local midnight, in UTC ms
   const ymd=dn=>{const d=new Date(dn*DAY);return [d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate()];};
-  const wd=dn=>(dn+3)%7;
-  const start=dn=>dn*DAY+6*HOUR;                 // 06:00 UTC = midnight CST / 1 AM CDT, always before the Dallas sunrise
+  const wd=dn=>(dn+3)%7;                                                            // Monday = 0
   const fmt=ms=>ms==null?'—':tfmt.format(new Date(ms));
   const fmtd=(ms,dn)=>{if(ms==null)return '—';const o=dnOf(ms);if(o===dn)return fmt(ms);const [,m,d]=ymd(o);return fmt(ms)+' ('+m+'/'+d+')';};
   const label=(dn,opt)=>new Date(dn*DAY).toLocaleDateString('en-US',Object.assign({timeZone:'UTC'},opt));
+  const memo=(k,fn)=>{if(!cache.has(k))cache.set(k,fn());return cache.get(k);};
 
   const ayan=ms=>23.853+(ms-J2000)/(365.25*DAY)*(50.2879/3600);
   const norm=x=>((x%360)+360)%360;
@@ -574,105 +779,295 @@ const PZ=(()=>{
     for(let g=0;g<6;g++){const end=nextChange(fn,t);out.push([name(fn(t)),end]);if(end==null||end>=stop)break;t=end+MIN;}
     return out;
   }
-  function masaAt(ms){
+  function newMoons(ms){
+    const hit=lun.find(([p,n])=>p<=ms&&ms<n);if(hit)return hit;
     const nm=from=>Astronomy.SearchMoonPhase(0,new Date(from),40).date.getTime();
     let prev=nm(ms-35*DAY),next=nm(prev+DAY);
     while(next<=ms){prev=next;next=nm(prev+DAY);}
-    const r1=sunRashi(prev),r2=sunRashi(next);
-    return [(r1+1)%12,r1===r2];
+    lun.push([prev,next]);return [prev,next];
   }
-  const cache=new Map();
+  function masaAt(ms){const [p,n]=newMoons(ms),r1=sunRashi(p),r2=sunRashi(n);return [(r1+1)%12,r1===r2];}
   function sun(dn){
-    if(!cache.has(dn)){
-      const obs=new Astronomy.Observer(LAT,LON,0),S=Astronomy.Body.Sun;
-      const f=(dir,ms,days)=>{const t=Astronomy.SearchRiseSet(S,obs,dir,new Date(ms),days);return t?t.date.getTime():null;};
-      const rise=f(+1,start(dn),1),set=f(-1,rise,1),nrise=f(+1,set,1),pset=f(-1,start(dn)-12*HOUR,1);
-      cache.set(dn,{rise,set,nrise,pset});
-    }
-    return cache.get(dn);
+    return memo('s'+dn,()=>{
+      const obs=new Astronomy.Observer(L.lat,L.lon,0),B=Astronomy.Body.Sun;
+      const f=(dir,ms,days)=>{const t=Astronomy.SearchRiseSet(B,obs,dir,new Date(ms),days);return t?t.date.getTime():null;};
+      const rise=f(+1,start(dn),1),set=rise&&f(-1,rise,1),nrise=set&&f(+1,set,1),pset=rise&&f(-1,rise-DAY,1);
+      if(!rise||!set||!nrise||!pset)throw new Error('the sun does not rise and set at this place on this date');
+      return {rise,set,nrise,pset};
+    });
+  }
+  function tm(dn,ref){
+    return memo('t'+dn+ref,()=>{
+      const {rise,set,nrise}=sun(dn),day=set-rise;
+      const t={sunrise:rise,midday:rise+day/2,afternoon:rise+day*.7,sunset:set,midnight:(set+nrise)/2}[ref];
+      return [tithiAt(t),...masaAt(t)];
+    });
+  }
+  function festivals(dn){                     // [[gujarati, english, major?], ...]
+    return memo('f'+dn,()=>{
+      const out=[],[,gm,gd]=ymd(dn),fixed=PD.FIXED[gm+','+gd];
+      if(fixed)out.push(fixed);
+      for(const ref of ['sunrise','midday','afternoon','sunset','midnight']){
+        const [t,m,adh]=tm(dn,ref),[tp,mp]=tm(dn-1,ref),[tn,mn,adhn]=tm(dn+1,ref),found=[];
+        if(tp!==t||mp!==m)found.push([m,adh,t]);                 // a tithi on two days is kept on the first
+        const skipped=(((tn-t)%30)+30)%30;
+        for(let step=1;step<skipped;step++){const k=((t+step-1)%30)+1;found.push(k<t?[mn,adhn,k]:[m,adh,k]);}   // kshaya tithis
+        for(const [masa,adhik,tt] of found){
+          const named=adhik?[]:(PD.FESTIVALS[masa+','+tt]||[]);
+          for(const [gu,en,r] of named)if(r===ref)out.push([gu,en]);
+          const mon=PD.MONTHLY[tt];
+          if(mon&&mon[2]===ref&&!named.length)out.push(mon.slice(0,2));
+        }
+      }
+      const {rise,nrise}=sun(dn);
+      if(sunRashi(rise)===8&&sunRashi(nrise)===9)out.push(['મકર સંક્રાંતિ','Makar Sankranti']);
+      const seen=new Set(),res=[];
+      for(const [gu,en] of out)if(!seen.has(en)){seen.add(en);res.push([gu,en,PD.MAJOR.includes(en)]);}
+      return res;
+    });
   }
   const span=(a,b,part)=>{const len=(b-a)/8,s=a+(part-1)*len;return [s,s+len];};
-  const tithiName=t=>t===30?'Amavasya':TITHI[(t-1)%15];
+  const tithiName=t=>t===30?PD.AMAS:PD.TITHI[(t-1)%15];
   function brahma(dn){const {rise,pset}=sun(dn),mu=(rise-pset)/15;return [rise-2*mu,rise-mu];}
   function details(dn){
-    const {rise,set,nrise}=sun(dn),w=wd(dn),t=tithiAt(rise),[masa,adhik]=masaAt(rise),[y,m]=ymd(dn);
+    const {rise,set,nrise}=sun(dn),w=wd(dn),[t,masa,adhik]=tm(dn,'sunrise'),[y,m]=ymd(dn);
     const dayLen=set-rise,noon=rise+dayLen/2,mu=dayLen/15,chog=[];
-    for(const [a,b,cyc,first,part] of [[rise,set,DAY_CYCLE,DAY_START[w],'day'],[set,nrise,NIGHT_CYCLE,NIGHT_START[w],'night']]){
+    for(const [a,b,cyc,first,part] of [[rise,set,PD.DAY_CYCLE,PD.DAY_START[w],'day'],[set,nrise,PD.NIGHT_CYCLE,PD.NIGHT_START[w],'night']]){
       const i0=cyc.indexOf(first),len=(b-a)/8;
-      for(let n=0;n<8;n++){const k=cyc[(i0+n)%7];chog.push({part,name:CHOG[k][0],q:CHOG[k][1],start:a+n*len,end:a+(n+1)*len});}
+      for(let n=0;n<8;n++){const k=cyc[(i0+n)%7];chog.push({part,name:PD.CHOG[k],q:PD.CHOG[k][2],start:a+n*len,end:a+(n+1)*len});}
     }
-    return {dn,vara:VARA[w],masa:MASA[masa]+(adhik?' (Adhik)':''),samvat:masa>=7&&m>=9?y+57:y+56,
-      paksha:t<=15?'Shukla Paksha (Sud)':'Krishna Paksha (Vad)',short:(t<=15?'Sud ':'Vad ')+tithiName(t),
-      tithi:ends(tithiAt,rise,nrise,tithiName),nakshatra:ends(nakAt,rise,nrise,v=>NAK[v]),
-      yoga:ends(yogaAt,rise,nrise,v=>YOGA[v]),karana:ends(karanaAt,rise,nrise,k=>KFIX[k]||KMOV[(k-1)%7]),
+    const sud=t<=15;
+    return {dn,vara:PD.VARA[w],masa:PD.MASA[masa],adhik,samvat:masa>=7&&m>=9?y+57:y+56,
+      paksha:sud?['સુદ (શુક્લ પક્ષ)','Shukla Paksha']:['વદ (કૃષ્ણ પક્ષ)','Krishna Paksha'],
+      short:[PD.MASA[masa][0]+(sud?' સુદ ':' વદ ')+tithiName(t)[0],PD.MASA[masa][1]+(sud?' Sud ':' Vad ')+tithiName(t)[1]],
+      tithi:ends(tithiAt,rise,nrise,tithiName),nakshatra:ends(nakAt,rise,nrise,v=>PD.NAKSHATRA[v]),
+      yoga:ends(yogaAt,rise,nrise,v=>PD.YOGA[v]),karana:ends(karanaAt,rise,nrise,k=>PD.KARANA_FIXED[k]||PD.KARANA_MOVING[(k-1)%7]),
       sunrise:rise,sunset:set,brahma:brahma(dn),abhijit:[noon-mu/2,noon+mu/2],
-      rahu:span(rise,set,RAHU[w]),yama:span(rise,set,YAMA[w]),gulika:span(rise,set,GULIKA[w]),chog};
+      rahu:span(rise,set,PD.RAHU[w]),yama:span(rise,set,PD.YAMA[w]),gulika:span(rise,set,PD.GULIKA[w]),chog,festivals:festivals(dn)};
   }
-  return {dnOf,fmt,fmtd,label,details,brahma,today:()=>dnOf(Date.now())};
+  function upcoming(max,days){
+    const t0=dnOf(Date.now());return memo('u'+t0,()=>{const out=[];for(let d=t0+1;out.length<max&&d<=t0+days;d++){const f=festivals(d);if(f.length)out.push([d,f]);}return out;});
+  }
+  return {setLoc,dnOf,fmt,fmtd,label,details,brahma,festivals,upcoming,today:()=>dnOf(Date.now()),tz:()=>L.tz};
 })();
+PZ.setLoc(S.loc);
+const ready=()=>typeof Astronomy!=='undefined'&&typeof PD!=='undefined';
+const bi=p=>p[0]+' ('+p[1]+')';
 let pdn=null;
 function drawPanchang(){
   const box=$('pBody');
-  if(!window.Astronomy){box.innerHTML='<p class="note">The Panchang needs an internet connection the first time, to load its astronomy library.</p>';return;}
+  $('locName').textContent=S.loc.name+(S.loc.live?' (live)':'');
+  $('pSub').textContent=S.loc.name.split(',')[0]+' · '+PZ.tz().replace(/_/g,' ');
+  if(!ready()){box.innerHTML='<p class="note">The Panchang needs an internet connection the first time, to load its data.</p>';return;}
   if(pdn==null)pdn=PZ.today();
   $('pTitle').textContent=PZ.label(pdn,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   try{
     const x=PZ.details(pdn),now=Date.now();
     const row=(k,v,c)=>'<div class="prow"><span class="k">'+k+'</span><span class="v '+(c||'')+'">'+v+'</span></div>';
-    const list=a=>a.map(([n,end])=>n+(end?' until '+PZ.fmtd(end,pdn):'')).join('<br>');
+    const list=a=>a.map(([n,end])=>bi(n)+(end?' until '+PZ.fmtd(end,pdn):'')).join('<br>');
     const rng=([a,b])=>PZ.fmt(a)+' – '+PZ.fmt(b);
-    let h='<div class="sec">Panchang</div>'+row('Month',x.masa+' · Vikram Samvat '+x.samvat)+row('Paksha',x.paksha)+row('Tithi',list(x.tithi))+
-      row('Nakshatra',list(x.nakshatra))+row('Yoga',list(x.yoga))+row('Karana',list(x.karana))+row('Vara',x.vara)+
-      '<div class="sec">Sun</div>'+row('Sunrise',PZ.fmt(x.sunrise))+row('Sunset',PZ.fmt(x.sunset))+
-      '<div class="sec">Muhurat</div>'+row('Brahma muhurta',rng(x.brahma),'good')+row('Abhijit muhurta',rng(x.abhijit),'good')+
-      row('Rahu kaal',rng(x.rahu),'bad')+row('Yamaganda',rng(x.yama),'bad')+row('Gulika kaal',rng(x.gulika),'bad');
-    for(const [part,title] of [['day','Choghadiya · day'],['night','Choghadiya · night']]){
+    const fest=f=>'<div class="fest'+(f[2]?' major':'')+'"><b>★ '+esc(f[0])+'</b><small>'+esc(f[1])+'</small></div>';
+    let h='<div class="sec">તહેવાર · Festival</div>'+(x.festivals.length?x.festivals.map(fest).join(''):'<p class="note">આ દિવસે કોઈ તહેવાર નથી. No festival on this day.</p>');
+    h+='<div class="sec">પંચાંગ · Panchang</div>'+row('માસ Month',bi(x.masa)+(x.adhik?' · અધિક માસ':'')+' · વિક્રમ સંવત '+x.samvat)+row('પક્ષ Paksha',bi(x.paksha))+row('તિથિ Tithi',list(x.tithi))+
+      row('નક્ષત્ર Nakshatra',list(x.nakshatra))+row('યોગ Yoga',list(x.yoga))+row('કરણ Karana',list(x.karana))+row('વાર Vara',bi(x.vara))+
+      '<div class="sec">સૂર્ય · Sun</div>'+row('સૂર્યોદય Sunrise',PZ.fmt(x.sunrise))+row('સૂર્યાસ્ત Sunset',PZ.fmt(x.sunset))+
+      '<div class="sec">મુહૂર્ત · Muhurat</div>'+row('બ્રહ્મ મુહૂર્ત Brahma',rng(x.brahma),'good')+row('અભિજીત મુહૂર્ત Abhijit',rng(x.abhijit),'good')+
+      row('રાહુ કાળ Rahu kaal',rng(x.rahu),'bad')+row('યમગંડ Yamaganda',rng(x.yama),'bad')+row('ગુલિક કાળ Gulika',rng(x.gulika),'bad');
+    for(const [part,title] of [['day','દિવસના ચોઘડિયા · Choghadiya, day'],['night','રાત્રિના ચોઘડિયા · Choghadiya, night']]){
       h+='<div class="sec">'+title+'</div>';
       for(const c of x.chog.filter(c=>c.part===part)){
         const cur=c.start<=now&&now<c.end;
-        h+='<div class="crow'+(cur?' now':'')+'"><span>'+PZ.fmt(c.start)+' – '+PZ.fmt(c.end)+'</span><span>'+c.name+'</span><span class="q '+(c.q==='neutral'?'':c.q)+'">'+(cur?'now · ':'')+c.q+'</span></div>';
+        h+='<div class="crow'+(cur?' now':'')+'"><span>'+PZ.fmt(c.start)+' – '+PZ.fmt(c.end)+'</span><span>'+c.name[0]+' '+c.name[1]+'</span><span class="q '+(c.q==='neutral'?'':c.q)+'">'+(cur?'હવે now · ':'')+c.q+'</span></div>';
       }
     }
+    const up=PZ.upcoming(8,45);
+    h+='<div class="sec">આગામી · Coming up</div>'+(up.length?up.map(([d,f])=>'<div class="fest'+(f.some(q=>q[2])?' major':'')+'"><b>'+PZ.label(d,{weekday:'short',day:'numeric',month:'short'})+' · '+f.map(q=>esc(q[0])).join(', ')+'</b><small>'+f.map(q=>esc(q[1])).join(', ')+'</small></div>').join(''):'<p class="note">Nothing in the next 45 days.</p>');
     box.innerHTML=h;
-  }catch(e){box.innerHTML='<p class="note">The Panchang could not be calculated: '+String(e.message).replace(/</g,'&lt;')+'</p>';}
+  }catch(e){box.innerHTML='<p class="note">The Panchang could not be calculated: '+esc(e.message)+'.</p>';}
 }
 function drawStrip(){
   const el=$('strip');
-  if(!window.Astronomy){el.innerHTML='<span>Panchang unavailable offline. Open once with internet.</span>';return;}
+  if(!ready()){el.innerHTML='<span>Panchang unavailable offline. Open once with internet.</span>';return;}
   try{
     const now=Date.now();let dn=PZ.today(),b=PZ.brahma(dn);
     if(now>b[1]){dn+=1;b=PZ.brahma(dn);}
-    const x=PZ.details(PZ.today());
-    el.innerHTML='<b>'+x.masa+' '+x.short+' · '+x.nakshatra[0][0]+'</b>'+
-      '<span>Dallas, TX · sunrise '+PZ.fmt(x.sunrise)+' · Rahu kaal '+PZ.fmt(x.rahu[0])+' – '+PZ.fmt(x.rahu[1])+'</span>'+
-      '<span>Brahma muhurta '+PZ.label(dn,{weekday:'short'})+': <b class="good">'+PZ.fmt(b[0])+' – '+PZ.fmt(b[1])+'</b></span>';
-  }catch(e){el.innerHTML='<span>Panchang unavailable.</span>';}
+    const x=PZ.details(PZ.today()),f=x.festivals;
+    el.innerHTML='<b>'+x.short[0]+' · '+x.nakshatra[0][0][0]+'</b><span>'+x.short[1]+' · '+x.nakshatra[0][0][1]+'</span>'+
+      (f.length?'<span class="good">★ '+f.map(q=>esc(q[0])+' ('+esc(q[1])+')').join(', ')+'</span>':'')+
+      '<span>'+esc(S.loc.name.split(',')[0])+' · sunrise '+PZ.fmt(x.sunrise)+' · રાહુ કાળ '+PZ.fmt(x.rahu[0])+' – '+PZ.fmt(x.rahu[1])+'</span>'+
+      '<span>બ્રહ્મ મુહૂર્ત '+PZ.label(dn,{weekday:'short'})+': <b class="good">'+PZ.fmt(b[0])+' – '+PZ.fmt(b[1])+'</b></span>';
+  }catch(e){el.innerHTML='<span>Panchang unavailable for this location.</span>';}
 }
 $('strip').onclick=()=>show('panchang');
 $('pPrev').onclick=()=>{pdn--;drawPanchang();};
 $('pNext').onclick=()=>{pdn++;drawPanchang();};
 $('pToday').onclick=()=>{pdn=null;drawPanchang();};
 
+/* ---------- location: live position, or country > state > city ---------- */
+let CITY=null,locRows=[];
+function loadCities(){return CITY||(CITY=fetch('cities.json').then(r=>{if(!r.ok)throw new Error('load');return r.json();}).catch(e=>{CITY=null;throw e;}));}
+function setLoc(l){S.loc=l;save();PZ.setLoc(l);pdn=null;drawPanchang();drawStrip();}
+function detect(loud){
+  const say=t=>{if(loud)$('locStatus').textContent=t;};
+  if(!navigator.geolocation){say('This device does not share its location. Choose a city below.');return;}
+  say('Finding your location…');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat=+pos.coords.latitude.toFixed(3),lon=+pos.coords.longitude.toFixed(3);let name='My location',cc='',st='';
+    try{
+      const C=await loadCities(),k=Math.cos(lat*Math.PI/180);let best=1e9;
+      for(const c in C.c){const sts=C.c[c][1];for(const s in sts)for(const r of sts[s]){const dd=(r[1]-lat)**2+((r[2]-lon)*k)**2;if(dd<best){best=dd;name=r[0]+', '+s+', '+C.c[c][0];cc=c;st=s;}}}
+    }catch(e){}
+    setLoc({name,lat,lon,tz:Intl.DateTimeFormat().resolvedOptions().timeZone,cc,st,auto:true,live:true});say('Using your live location.');
+  },()=>{say('Location was refused or is not available in this view. Choose a city below.');},{timeout:10000,maximumAge:36e5});
+}
+$('locLive').onclick=()=>detect(true);
+async function fillLoc(){
+  let C;try{C=await loadCities();}catch(e){$('locList').innerHTML='<p class="note" style="padding:8px 12px">The city list could not be loaded. Check your connection and open this again.</p>';return;}
+  const cs=$('locCountry'),ss=$('locState');
+  if(!cs.options.length){
+    cs.innerHTML=Object.keys(C.c).map(k=>'<option value="'+k+'">'+esc(C.c[k][0])+'</option>').join('');
+    cs.value=C.c[S.loc.cc]?S.loc.cc:'US';
+  }
+  const sts=C.c[cs.value][1],keep=ss.dataset.cc===cs.value?ss.value:(cs.value===S.loc.cc?S.loc.st:'');
+  ss.innerHTML='<option value="">All states</option>'+Object.keys(sts).map(s=>'<option>'+esc(s)+'</option>').join('');
+  ss.dataset.cc=cs.value;ss.value=sts[keep]?keep:'';
+  const q=$('locQ').value.trim().toLowerCase();locRows=[];
+  for(const s of (ss.value?[ss.value]:Object.keys(sts)))for(const r of sts[s]){
+    if(q&&!r[0].toLowerCase().includes(q))continue;
+    locRows.push([r,s]);
+  }
+  if(q)locRows.sort((a,b)=>(a[0][0].toLowerCase().startsWith(q)?0:1)-(b[0][0].toLowerCase().startsWith(q)?0:1));
+  const total=locRows.length;locRows=locRows.slice(0,200);
+  $('locList').innerHTML=locRows.length?locRows.map(([r,s],i)=>'<button type="button" data-i="'+i+'">'+esc(r[0])+' <small>'+esc(s)+'</small></button>').join('')+(total>200?'<p class="note" style="padding:8px 12px">Showing 200 of '+total+'. Type to search.</p>':''):'<p class="note" style="padding:8px 12px">No city found. Try another spelling, or use your live location.</p>';
+}
+$('locPick').addEventListener('toggle',()=>{if($('locPick').open)fillLoc();});
+$('locCountry').onchange=fillLoc;$('locState').onchange=fillLoc;$('locQ').oninput=fillLoc;
+$('locList').onclick=async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const C=await loadCities(),[r,s]=locRows[+b.dataset.i],cc=$('locCountry').value;
+  setLoc({name:r[0]+', '+s+', '+C.c[cc][0],lat:r[1],lon:r[2],tz:C.tz[r[3]],cc,st:s,auto:false});
+  $('locStatus').textContent='Location set.';$('locPick').open=false;
+};
+
+/* ---------- progress: streak, year calendar, books, backup ---------- */
+let pyear=new Date().getFullYear();
+const isDone=d=>{const r=dayRec(d);return !!(r&&r.d);};
+function streak(){
+  const d=new Date();d.setHours(12,0,0,0);if(!isDone(d))d.setDate(d.getDate()-1);
+  let n=0;while(isDone(d)){n++;d.setDate(d.getDate()-1);}return n;
+}
+function yearStats(y){
+  let best=0,run=0,days=0,j=0,p=0,m=0;const d=new Date(y,0,1,12);
+  while(d.getFullYear()===y){const r=dayRec(d);if(r){j+=r.j||0;p+=r.p||0;m+=r.m||0;}if(r&&r.d){days++;run++;best=Math.max(best,run);}else run=0;d.setDate(d.getDate()+1);}
+  return {best,days,j,p,m};
+}
+function drawProgress(){
+  const y=pyear,st=yearStats(y),now=new Date(),tk=iso(now),fin=H.books.filter(b=>b.fin&&b.fin.slice(0,4)===String(y)).length;
+  $('yLbl').textContent=y;$('yNext').disabled=y>=now.getFullYear();
+  const stat=(v,l)=>'<div class="stat"><b>'+v+'</b><span>'+l+'</span></div>';
+  $('stats').innerHTML=stat(streak(),'day streak now')+stat(st.best,'best streak in '+y)+stat(st.days,'days done in '+y)+stat(Math.round(st.m/60*10)/10,'hours practised')+stat(Math.floor(st.j/108),'malas of japa')+stat(st.p,'pages read')+stat(fin,'books finished');
+  let h='';
+  for(let m=0;m<12;m++){
+    const n=new Date(y,m+1,0).getDate(),lead=new Date(y,m,1).getDay();
+    h+='<div class="month"><b>'+new Date(y,m,1).toLocaleDateString('en-US',{month:'long'})+'</b><div class="mgrid">'+'<span></span>'.repeat(lead);
+    for(let d=1;d<=n;d++){
+      const k=y+'-'+pad(m+1)+'-'+pad(d),r=(H.days[y]||{})[pad(m+1)+'-'+pad(d)];
+      h+='<button type="button" data-day="'+k+'" class="'+(r&&r.d?'done':'')+(k===tk?' today':'')+'"'+(k>tk?' disabled':'')+' aria-label="'+k+(r&&r.d?', done':'')+'">'+d+'</button>';
+    }
+    h+='</div></div>';
+  }
+  $('months').innerHTML=h;
+  drawBooks();
+}
+$('months').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const [y,m,d]=b.dataset.day.split('-').map(Number),r=dayRec(new Date(y,m-1,d,12),true);
+  if(r.d)delete r.d;else r.d=1;saveH();drawProgress();
+};
+$('yPrev').onclick=()=>{pyear--;drawProgress();};
+$('yNext').onclick=()=>{pyear++;drawProgress();};
+let askDel='';
+function drawBooks(){
+  $('books').innerHTML=H.books.length?H.books.map(b=>{
+    const pct=b.tot?Math.min(100,Math.round(100*(b.pg||0)/b.tot)):0;
+    return '<div class="book'+(b.fin?' fin':'')+'">'+
+      '<div class="row between"><label class="chk"><input type="radio" name="curbook" id="cur-'+b.id+'" data-cur="'+b.id+'"'+(H.cur===b.id?' checked':'')+(b.fin?' disabled':'')+'><b>'+esc(b.t)+'</b></label>'+
+      '<span class="status">'+(b.fin?'finished '+b.fin:'page '+(b.pg||0)+(b.tot?' of '+b.tot+' · '+pct+'%':''))+'</span></div>'+
+      (b.tot?'<div class="bar"><i style="width:'+pct+'%"></i></div>':'')+
+      '<div class="row"><label class="mins">Page reached <input type="number" id="pg-'+b.id+'" data-pg="'+b.id+'" min="0" value="'+(b.pg||0)+'"></label>'+
+      '<button type="button" class="small" data-fin="'+b.id+'">'+(b.fin?'Read again':'Mark finished')+'</button>'+
+      '<button type="button" class="small" data-del="'+b.id+'">'+(askDel===b.id?'Tap again to remove':'Remove')+'</button></div></div>';
+  }).join(''):'<p class="note">No books yet. Add the book you are reading. The selected book appears in the Book reading step, where you save the page you reached each morning.</p>';
+}
+function setPage(id,pg){
+  const b=H.books.find(b=>b.id===id);if(!b)return;
+  pg=Math.max(0,pg||0);if(b.tot)pg=Math.min(pg,b.tot);
+  const delta=pg-(b.pg||0);if(delta>0){const r=dayRec(new Date(),true);r.p=(r.p||0)+delta;}
+  b.pg=pg;if(b.tot&&pg>=b.tot&&!b.fin)b.fin=iso(new Date());
+  saveH();drawProgress();
+}
+$('bkAdd').onclick=()=>{
+  const t=$('bkTitle').value.trim();if(!t){$('bkTitle').focus();return;}
+  const b={id:'b'+Date.now().toString(36),t,tot:Math.max(0,parseInt($('bkTotal').value)||0),pg:0,fin:'',add:iso(new Date())};
+  H.books.push(b);if(!H.books.some(x=>x.id===H.cur&&!x.fin))H.cur=b.id;
+  $('bkTitle').value='';$('bkTotal').value='';saveH();howFor='';drawProgress();draw();
+};
+$('books').addEventListener('change',e=>{
+  const d=e.target.dataset;
+  if(d.cur){H.cur=d.cur;saveH();howFor='';draw();}
+  if(d.pg){setPage(d.pg,parseInt(e.target.value)||0);howFor='';draw();}
+});
+$('books').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.fin){const k=H.books.find(x=>x.id===d.fin);k.fin=k.fin?'':iso(new Date());}
+  if(d.del){if(askDel!==d.del){askDel=d.del;drawBooks();return;}H.books=H.books.filter(x=>x.id!==d.del);if(H.cur===d.del)H.cur=(H.books.find(x=>!x.fin)||{}).id||'';}
+  askDel='';saveH();howFor='';drawProgress();draw();
+});
+$('bkMake').onclick=()=>{$('bkText').value=JSON.stringify({app:'brahma-muhurta-sadhana',S,H});$('bkStatus').textContent='This is your backup.';};
+$('bkCopy').onclick=()=>{
+  const t=$('bkText');if(!t.value)$('bkMake').onclick();
+  const fallback=()=>{t.focus();t.select();$('bkStatus').textContent='Selected. Press Ctrl+C or Copy.';};
+  try{navigator.clipboard.writeText(t.value).then(()=>{$('bkStatus').textContent='Copied.';},fallback);}catch(e){fallback();}
+};
+$('bkRestore').onclick=()=>{
+  try{
+    const j=JSON.parse($('bkText').value);
+    if(j.app!=='brahma-muhurta-sadhana'||!j.S||!j.H||typeof j.H.days!=='object')throw new Error('bad');
+    S=Object.assign(S,j.S);H=Object.assign({days:{},books:[],cur:''},j.H);tidy();save();saveH();
+    PZ.setLoc(S.loc);pdn=null;howFor='';paintStatic();drawList();draw();drawAlarm();drawStrip();drawProgress();
+    $('bkStatus').textContent='Restored.';
+  }catch(e){$('bkStatus').textContent='That text is not a backup from this app. Nothing was changed.';}
+};
+
 /* ---------- tabs ---------- */
+const VIEWS=['today','routine','panchang','guide','progress'];
 function show(v){
   S.tab=v;save();
   document.querySelectorAll('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
   if(v==='panchang')drawPanchang();
+  if(v==='progress')drawProgress();
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{show(b.dataset.view);window.scrollTo(0,0);});
+$('scriptSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.script=b.dataset.script;save();howFor='';paintStatic();draw();};
 
 /* ---------- first paint ---------- */
-(function(){
+function paintStatic(){
   const w=today(),now=new Date();
   $('todayLine').textContent=now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})+' · meditation today: '+w.c+', '+w.area;
   $('week').innerHTML=[1,2,3,4,5,6,0].map(i=>{const d=WEEK[i];
     return '<div class="day'+(i===now.getDay()?' today':'')+'"><span class="d">'+d.d+'</span><div><p><b>'+d.c+'</b> · '+d.area+'</p><small>'+d.t+' · mantra '+d.m+' · drone '+Math.round(d.f)+' Hz</small></div></div>';}).join('');
-  $('howAll').innerHTML=DEF.map(s=>'<details><summary>'+s.name+' <small>· '+s.g+(s.on?'':' · optional')+'</small></summary><div class="body">'+howHtml(s)+'</div></details>').join('');
-  $('alarmTime').value=S.alarm;$('vol').value=S.vol;
+  $('howAll').innerHTML=DEF.map(s=>'<details><summary>'+s.name+' · '+s.gu+' <small>· '+s.g+(s.on?'':' · optional')+'</small></summary><div class="body">'+howHtml(s)+'</div></details>').join('');
+  document.querySelectorAll('#scriptSeg button').forEach(b=>b.classList.toggle('on',b.dataset.script===S.script));
+  $('alarmTime').value=S.alarm;$('vol').value=S.vol;$('stepBell').checked=!!S.stepBell;
+}
+(function(){
+  paintStatic();
   curId=(active()[0]||{}).id||null;
   drawList();draw();drawAlarm();drawStrip();
-  show(['today','routine','panchang','guide'].includes(S.tab)?S.tab:'today');
+  const h=location.hash.slice(1);
+  show(VIEWS.includes(h)?h:VIEWS.includes(S.tab)?S.tab:'today');
+  if(S.loc.auto)detect(false);
   lastT=performance.now();setInterval(loop,200);setInterval(drawStrip,60000);
 })();
 </script>
