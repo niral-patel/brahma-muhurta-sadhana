@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sadhana">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14122b">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Brahma Muhurta Sadhana</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;700&family=Yatra+One&display=swap">
+<style>
+/* Layout: pre-dawn sky. One guided "now" panel on top, the editable routine and the weekly meditation plan below; two columns on wide screens. */
+:root{
+  --bg:#14122b; --surface:#1d1a3c; --raised:#27234d; --line:#38336a;
+  --fg:#f0ecfa; --muted:#aaa4cc; --accent:#f5a623; --accent-ink:#2b1a00; --dawn:#ee8a9a;
+  --display:"Yatra One","Mukta",system-ui,sans-serif;
+  --body:"Mukta",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
+    --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f0fa; --surface:#ffffff; --raised:#ebe7f8; --line:#d6d0ec;
+  --fg:#1c1938; --muted:#5b5683; --accent:#b96300; --accent-ink:#ffffff; --dawn:#b3405a;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700;margin:0}
+.sub{color:var(--muted);margin:0}
+.cols{display:grid;gap:20px;grid-template-columns:1fr}
+@media (min-width:880px){.cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+button{font:inherit;color:var(--fg);background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.small{padding:4px 9px;font-size:.9rem}
+input[type=time],input[type=number]{font:inherit;color:var(--fg);background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+input[type=number]{width:4.2em}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+
+/* now panel */
+.now{align-items:center;text-align:center}
+.ring{position:relative;width:210px;max-width:100%;aspect-ratio:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{fill:none;stroke:var(--raised);stroke-width:7}
+.ring .prog{fill:none;stroke:var(--accent);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.clock{font-family:var(--display);font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
+.count{color:var(--muted);font-size:.9rem}
+.stepname{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0;text-wrap:balance}
+.cue{min-height:2.2em;font-size:1.25rem;font-weight:700;color:var(--dawn);margin:0}
+.how{color:var(--muted);margin:0;max-width:46ch}
+.bar{width:100%;height:5px;border-radius:3px;background:var(--raised);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--dawn)}
+.ctrl{justify-content:center}
+.opts{justify-content:center;color:var(--muted);font-size:.95rem}
+.opts label{display:flex;align-items:center;gap:6px}
+input[type=range]{accent-color:var(--accent);width:110px}
+
+/* alarm */
+.ringing{border-color:var(--accent);background:var(--raised)}
+.status{color:var(--muted);margin:0;font-size:.95rem}
+
+/* routine list */
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ol.steps li{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px 10px;padding:9px 0;border-top:1px solid var(--line)}
+ol.steps li.off .nm,ol.steps li.off .at{opacity:.45}
+ol.steps li.cur .nm b{color:var(--accent)}
+.nm{min-width:0;background:none;border:0;padding:0;text-align:left;border-radius:4px}
+.nm b{display:block;font-weight:700}
+.at{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.mv{display:flex;gap:4px}
+.mins{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:.85rem}
+
+/* week */
+.week{display:flex;flex-direction:column}
+.day{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:2px 12px;padding:9px 0;border-top:1px solid var(--line)}
+.day .d{font-weight:700;color:var(--muted)}
+.day.today .d{color:var(--accent)}
+.day p{margin:0}
+.day small{color:var(--muted);font-size:.9rem}
+.note{color:var(--muted);font-size:.92rem;margin:0;max-width:75ch}
+@media (prefers-reduced-motion:reduce){.ring .prog{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Brahma Muhurta Sadhana</h1>
+    <p class="sub" id="todayLine"></p>
+  </header>
+
+  <div class="cols">
+    <div class="col">
+      <section class="panel now" aria-live="polite">
+        <h2 id="groupLbl">Ready</h2>
+        <div class="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="54"></circle><circle class="prog" id="prog" cx="60" cy="60" r="54" stroke-dasharray="339.3" stroke-dashoffset="0"></circle></svg>
+          <div class="mid"><div class="clock" id="clock">0:00</div><div class="count" id="count"></div></div>
+        </div>
+        <p class="stepname" id="stepName"></p>
+        <p class="cue" id="cue"></p>
+        <p class="how" id="how"></p>
+        <div class="bar" aria-hidden="true"><i id="overall"></i></div>
+        <div class="row ctrl">
+          <button id="prevBtn" type="button">Back</button>
+          <button id="playBtn" type="button" class="primary">Start</button>
+          <button id="nextBtn" type="button">Next step</button>
+          <button id="plusBtn" type="button">+1 min</button>
+        </div>
+        <div class="row opts">
+          <label><input type="checkbox" id="voice"> Voice guide</label>
+          <label>Volume <input type="range" id="vol" min="0" max="1" step="0.05"></label>
+          <button id="testBtn" type="button" class="small">Test sound</button>
+        </div>
+      </section>
+
+      <section class="panel" id="alarmPanel">
+        <h2>Wake-up alarm</h2>
+        <div class="row">
+          <input type="time" id="alarmTime" aria-label="Alarm time">
+          <button id="armBtn" type="button" class="primary">Set alarm</button>
+          <button id="beginBtn" type="button" hidden>Begin sadhana</button>
+        </div>
+        <p class="status" id="alarmStatus"></p>
+        <p class="note">The alarm rings only while this page stays open with the screen on, so keep the device plugged in. On iPhone, also set the Clock app alarm as your real wake-up, then open this page and press Start.</p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel">
+        <div class="row" style="justify-content:space-between">
+          <h2>Your routine</h2>
+          <span class="status" id="totalLine"></span>
+        </div>
+        <ol class="steps" id="steps"></ol>
+        <div class="row"><button id="resetBtn" type="button" class="small">Restore default routine</button></div>
+      </section>
+
+      <section class="panel">
+        <h2>Meditation through the week</h2>
+        <div class="week" id="week"></div>
+      </section>
+    </div>
+  </div>
+
+  <p class="note">Care: skip Kapalbhati and Bhastrika if you are pregnant, have high blood pressure, heart disease, a hernia or recent abdominal surgery. Ease into cold showers if you have a heart condition. Stop any practice that makes you dizzy and breathe normally.</p>
+</div>
+
+<script>
+const W=[{l:'Work',secs:40,s:'work'},{l:'Rest',secs:20,s:'rest'}];
+const DEF=[
+ {id:'wake',name:'Wake up and freshen',g:'Prepare',mins:5,on:1,how:'Sit up slowly. Drink a glass of warm water. Wash your face, brush your teeth, use the toilet.'},
+ {id:'walk',name:'Walk',g:'Body',mins:5,on:1,how:'Walk briskly, indoors or outside. Swing the arms and loosen the neck, shoulders and hips.'},
+ {id:'surya',name:'Surya Namaskar',g:'Body',mins:5,on:0,how:'Flow through the 12 postures at an easy pace, one breath per movement.'},
+ {id:'dand',name:'Hanuman dand',g:'Body',mins:3,on:1,pat:W,how:'Dive through from downward dog to upward dog and back. Work at the bell, rest at the low bell.'},
+ {id:'push',name:'Push-ups',g:'Body',mins:3,on:1,pat:W,how:'Body in one straight line, elbows close. Drop to the knees to keep good form.'},
+ {id:'plank',name:'Plank',g:'Body',mins:2,on:1,pat:[{l:'Hold',secs:45,s:'work'},{l:'Rest',secs:15,s:'rest'}],how:'Elbows under shoulders, belly drawn in, steady breathing.'},
+ {id:'shower',name:'Cold shower',g:'Cleanse',mins:5,on:1,how:'Start with feet and hands, then the whole body. Breathe slowly through the nose. Put on clean clothes for puja.'},
+ {id:'kapal',name:'Kapalbhati',g:'Pranayama',mins:5,on:1,pat:[{l:'Sharp exhale on every tick',secs:45,s:'ticks'},{l:'Rest. Breathe normally',secs:15,s:'rest'}],how:'Sit tall. Snap the belly in to exhale through the nose; the inhale happens by itself.'},
+ {id:'bhastrika',name:'Bhastrika',g:'Pranayama',mins:2,on:0,pat:[{l:'Strong inhale and exhale on the ticks',secs:20,s:'ticks'},{l:'Rest. Breathe normally',secs:20,s:'rest'}],how:'Bellows breath: equal, forceful inhale and exhale through the nose, chest and belly moving.'},
+ {id:'anulom',name:'Anulom Vilom',g:'Pranayama',mins:5,on:1,pat:[{l:'Inhale left',secs:4,s:'in'},{l:'Exhale right',secs:8,s:'out'},{l:'Inhale right',secs:4,s:'in'},{l:'Exhale left',secs:8,s:'out'}],how:'Right thumb closes the right nostril, ring finger the left. Rising tone is inhale, falling tone is exhale.'},
+ {id:'bhramari',name:'Bhramari',g:'Pranayama',mins:3,on:1,pat:[{l:'Inhale',secs:4,s:'in'},{l:'Hum like a bee',secs:8,s:'hum'}],how:'Close the ears with the thumbs, eyes closed. Hum on the exhale and feel it in the skull.'},
+ {id:'ujjayi',name:'Ujjayi',g:'Pranayama',mins:3,on:1,pat:[{l:'Inhale',secs:5,s:'ocean'},{l:'Exhale',secs:5,s:'ocean'}],how:'Narrow the throat slightly so the breath sounds like the sea. Follow the wave sound in and out.'},
+ {id:'sheetali',name:'Sheetali',g:'Pranayama',mins:2,on:0,pat:[{l:'Inhale through the rolled tongue',secs:4,s:'in'},{l:'Exhale through the nose',secs:6,s:'out'}],how:'Cooling breath. If you cannot roll the tongue, inhale through the teeth (Sheetkari).'},
+ {id:'med',name:'Meditation',g:'Dhyana',mins:12,on:1,how:''},
+ {id:'puja',name:'Puja',g:'Puja',mins:9,on:1,how:'Light the diya and incense. Offer water and flowers. Chant your mantra or aarti, then sit one minute in silence and bow.'}
+];
+// index = Date.getDay(): Sunday 0 ... Saturday 6
+const WEEK=[
+ {d:'Sun',c:'Sahasrara',area:'crown of the head',m:'silent Om',f:246.9,t:'Open awareness',how:'Rest attention at the crown. Let sounds and thoughts pass without following them.'},
+ {d:'Mon',c:'Muladhara',area:'base of the spine',m:'Lam',f:130.8,t:'Body scan',how:'Feel the weight of the body on the floor. Move attention slowly from the feet up to the base of the spine.'},
+ {d:'Tue',c:'Svadhisthana',area:'just below the navel',m:'Vam',f:146.8,t:'Breath counting',how:'Count each exhale from 1 to 10, then begin again. Feel the lower belly move.'},
+ {d:'Wed',c:'Manipura',area:'navel',m:'Ram',f:164.8,t:'Flame visualisation',how:'Picture a steady golden flame at the navel. Each inhale makes it brighter.'},
+ {d:'Thu',c:'Anahata',area:'centre of the chest',m:'Yam',f:174.6,t:'Maitri (loving-kindness)',how:'Rest in the heart. Wish wellbeing to yourself, your family, and then all beings.'},
+ {d:'Fri',c:'Vishuddha',area:'throat',m:'Ham',f:196,t:'Om chanting',how:'Chant Om aloud with the drone, long and even. Feel the vibration in the throat.'},
+ {d:'Sat',c:'Ajna',area:'between the eyebrows',m:'Om',f:220,t:'Dharana (one-point focus)',how:'Hold attention between the eyebrows. Repeat Om silently with each exhale.'}
+];
+const $=id=>document.getElementById(id);
+const today=()=>WEEK[new Date().getDay()];
+
+/* ---------- saved settings (this device only) ---------- */
+let S={order:DEF.map(s=>s.id),mins:{},on:{},alarm:'03:30',voice:true,vol:0.7};
+try{const j=JSON.parse(localStorage.getItem('bms1')||'null');if(j)S=Object.assign(S,j);}catch(e){}
+DEF.forEach(s=>{if(!S.order.includes(s.id))S.order.push(s.id)});
+const save=()=>{try{localStorage.setItem('bms1',JSON.stringify(S))}catch(e){}};
+const byId=id=>DEF.find(s=>s.id===id);
+const all=()=>S.order.map(byId).filter(Boolean).map(s=>({...s,mins:S.mins[s.id]??s.mins,on:S.on[s.id]??!!s.on}));
+const active=()=>all().filter(s=>s.on);
+
+/* ---------- sound (all generated, no files) ---------- */
+let ac,master,noiseBuf,drone=null;
+function audio(){
+  if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=S.vol;master.connect(ac.destination);}
+  if(ac.state==='suspended')ac.resume();
+  return ac;
+}
+function bell(f=528,dur=6,g=0.45){
+  const a=audio(),t=a.currentTime;
+  [[1,1],[2.76,.4],[5.4,.18],[8.93,.07]].forEach(([m,amp])=>{
+    const o=a.createOscillator(),n=a.createGain();o.frequency.value=f*m;
+    n.gain.setValueAtTime(0.0001,t);n.gain.exponentialRampToValueAtTime(g*amp,t+0.015);
+    n.gain.exponentialRampToValueAtTime(0.0001,t+dur/Math.sqrt(m));
+    o.connect(n).connect(master);o.start(t);o.stop(t+dur);
+  });
+}
+function tickSnd(){
+  const a=audio(),t=a.currentTime,o=a.createOscillator(),n=a.createGain();
+  o.frequency.value=880;n.gain.setValueAtTime(0.35,t);n.gain.exponentialRampToValueAtTime(0.0001,t+0.08);
+  o.connect(n).connect(master);o.start(t);o.stop(t+0.1);
+}
+function env(n,t,secs,peak){n.gain.setValueAtTime(0.0001,t);n.gain.linearRampToValueAtTime(peak,t+Math.min(1,secs/3));n.gain.setValueAtTime(peak,t+secs-Math.min(1,secs/3));n.gain.linearRampToValueAtTime(0.0001,t+secs);}
+function glide(from,to,secs){
+  const a=audio(),t=a.currentTime,o=a.createOscillator(),n=a.createGain();
+  o.frequency.setValueAtTime(from,t);o.frequency.linearRampToValueAtTime(to,t+secs);env(n,t,secs,0.09);
+  o.connect(n).connect(master);o.start(t);o.stop(t+secs+0.05);
+}
+function hum(secs){
+  const a=audio(),t=a.currentTime,o=a.createOscillator(),lp=a.createBiquadFilter(),n=a.createGain();
+  o.type='sawtooth';o.frequency.value=146;lp.type='lowpass';lp.frequency.value=420;env(n,t,secs,0.16);
+  o.connect(lp).connect(n).connect(master);o.start(t);o.stop(t+secs+0.05);
+}
+function ocean(secs){
+  const a=audio(),t=a.currentTime;
+  if(!noiseBuf){noiseBuf=a.createBuffer(1,a.sampleRate*2,a.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+  const src=a.createBufferSource(),bp=a.createBiquadFilter(),n=a.createGain();
+  src.buffer=noiseBuf;src.loop=true;bp.type='bandpass';bp.frequency.value=650;bp.Q.value=0.6;
+  n.gain.setValueAtTime(0.0001,t);n.gain.linearRampToValueAtTime(0.22,t+secs*0.5);n.gain.linearRampToValueAtTime(0.0001,t+secs);
+  src.connect(bp).connect(n).connect(master);src.start(t);src.stop(t+secs+0.05);
+}
+function droneOn(f){
+  droneOff();
+  const a=audio(),t=a.currentTime,g=a.createGain(),lp=a.createBiquadFilter(),lfo=a.createOscillator(),lg=a.createGain();
+  lp.type='lowpass';lp.frequency.value=900;g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.16,t+4);
+  const os=[[f,1],[f*1.004,.8],[f*1.5,.35],[f*2,.25],[f/2,.6]].map(([hz,amp])=>{const o=a.createOscillator(),n=a.createGain();o.frequency.value=hz;n.gain.value=amp*0.4;o.connect(n).connect(lp);o.start(t);return o;});
+  lfo.frequency.value=0.08;lg.gain.value=0.04;lfo.connect(lg).connect(g.gain);lfo.start(t);os.push(lfo);
+  lp.connect(g).connect(master);drone={g,os};
+}
+function droneOff(){
+  if(!drone)return;const a=audio(),t=a.currentTime,d=drone;drone=null;
+  d.g.gain.cancelScheduledValues(t);d.g.gain.setValueAtTime(d.g.gain.value,t);d.g.gain.linearRampToValueAtTime(0.0001,t+2);
+  d.os.forEach(o=>o.stop(t+2.1));
+}
+function say(txt){
+  if(!S.voice)return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.rate=0.9;speechSynthesis.speak(u);}catch(e){}
+}
+let lock=null;
+function keepAwake(){try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>lock=l).catch(()=>{});}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(running||armed))keepAwake();});
+
+/* ---------- guided session ---------- */
+let curId=null,elapsed=0,extra=0,running=false,done=false,lastT=0,lastKey='',lastSec=-1,lastMark=0;
+const cur=()=>{const a=active();return a.find(s=>s.id===curId)||a[0];};
+const stepSecs=s=>s.mins*60+extra;
+function stepHow(s){if(s.id!=='med')return s.how;const w=today();return w.t+'. Focus: '+w.area+' ('+w.c+'). '+w.how;}
+function enter(s,announce){
+  curId=s.id;elapsed=0;extra=0;lastKey='';lastSec=-1;lastMark=0;done=false;droneOff();
+  if(announce){
+    bell(528);
+    const w=today();
+    say(s.id==='med'?('Meditation. '+w.t+'. Bring your attention to the '+w.area+'.'):(s.name+'. '+s.mins+' minutes.'));
+    if(s.id==='med'&&running)setTimeout(()=>{if(running&&curId==='med')droneOn(today().f)},2500);
+  }
+  drawList();draw();
+}
+function play(){
+  const a=active();if(!a.length)return;
+  audio();keepAwake();stopRing();
+  if(done||!curId||!a.some(s=>s.id===curId)){running=true;enter(a[0],true);}
+  else{running=true;if(elapsed===0){enter(cur(),true);}else if(curId==='med')droneOn(today().f);}
+  lastT=performance.now();draw();
+}
+function pause(){running=false;droneOff();try{speechSynthesis.cancel()}catch(e){}draw();}
+function go(dir){
+  const a=active(),i=a.findIndex(s=>s.id===cur().id)+dir;
+  if(i<0){enter(a[0],running);return;}
+  if(i>=a.length){finish();return;}
+  enter(a[i],running);
+}
+function finish(){
+  running=false;done=true;droneOff();
+  bell(396,7);setTimeout(()=>bell(528,7),1800);setTimeout(()=>bell(660,8),3600);
+  say('Your sadhana is complete.');draw();drawList();
+}
+function loop(){
+  const now=performance.now(),dt=(now-lastT)/1000;lastT=now;
+  if(running){
+    const s=cur();elapsed+=dt;
+    if(elapsed>=stepSecs(s)){go(1);}
+    else{
+      if(s.pat){
+        const cyc=s.pat.reduce((n,p)=>n+p.secs,0),pos=elapsed%cyc;let acc=0,pi=0;
+        for(;pi<s.pat.length;pi++){if(pos<acc+s.pat[pi].secs)break;acc+=s.pat[pi].secs;}
+        const p=s.pat[pi],round=Math.floor(elapsed/cyc),key=round+':'+pi;
+        if(key!==lastKey){
+          lastKey=key;lastSec=-1;$('cue').textContent=p.l;
+          if(p.s==='in')glide(196,294,p.secs);else if(p.s==='out')glide(294,196,p.secs);
+          else if(p.s==='hum')hum(p.secs);else if(p.s==='ocean')ocean(p.secs);
+          else if(p.s==='work')bell(660,3,.4);else if(p.s==='rest')bell(330,3,.4);
+          if(round===0&&p.s!=='ticks')say(p.l);
+        }
+        if(p.s==='ticks'){const sec=Math.floor(pos-acc);if(sec!==lastSec){lastSec=sec;tickSnd();}}
+      }else if(s.id==='med'){
+        const mark=Math.floor(elapsed/300);if(mark!==lastMark){lastMark=mark;bell(432,6,.25);}
+      }
+      draw();
+    }
+  }
+  checkAlarm();
+}
+const mmss=n=>{n=Math.max(0,Math.ceil(n));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0');};
+function draw(){
+  const a=active(),s=cur();
+  if(!s){$('stepName').textContent='Turn on at least one step';return;}
+  const i=a.findIndex(x=>x.id===s.id),tot=stepSecs(s),rem=tot-elapsed;
+  $('groupLbl').textContent=done?'Complete':(running?s.g:(elapsed>0?'Paused':'Ready'));
+  $('stepName').textContent=done?'Hari Om. Sadhana complete.':s.name;
+  $('clock').textContent=done?'0:00':mmss(rem);
+  $('count').textContent='Step '+(i+1)+' of '+a.length;
+  $('how').textContent=done?'':stepHow(s);
+  if(!s.pat||!running)$('cue').textContent=(!done&&s.id==='med')?('Mantra: '+today().m):'';
+  $('prog').style.strokeDashoffset=done?339.3:(339.3*(elapsed/tot)).toFixed(1);
+  const before=a.slice(0,i).reduce((n,x)=>n+x.mins*60,0),whole=a.reduce((n,x)=>n+x.mins*60,0);
+  $('overall').style.width=(done?100:Math.min(100,100*(before+Math.min(elapsed,s.mins*60))/whole)).toFixed(1)+'%';
+  $('playBtn').textContent=running?'Pause':(done?'Start again':(elapsed>0?'Resume':'Start'));
+}
+
+/* ---------- routine editor ---------- */
+function clockAt(mins){
+  const [h,m]=S.alarm.split(':').map(Number),t=(h*60+m+mins)%1440,hh=Math.floor(t/60),mm=t%60;
+  return ((hh%12)||12)+':'+String(mm).padStart(2,'0')+(hh<12?' AM':' PM');
+}
+function drawList(){
+  let t=0;const c=cur();
+  $('steps').innerHTML=all().map((s,i,arr)=>{
+    const at=s.on?clockAt(t):'off';if(s.on)t+=s.mins;
+    return '<li class="'+(s.on?'':'off')+(c&&c.id===s.id&&!done?' cur':'')+'">'+
+      '<input type="checkbox" id="on-'+s.id+'" data-on="'+s.id+'"'+(s.on?' checked':'')+' aria-label="Include '+s.name+'">'+
+      '<button type="button" class="nm" data-go="'+s.id+'" title="Jump to this step"><b>'+s.name+'</b><span class="at">'+at+' · '+s.g+'</span></button>'+
+      '<label class="mins"><input type="number" id="min-'+s.id+'" data-min="'+s.id+'" min="1" max="90" value="'+s.mins+'" aria-label="Minutes for '+s.name+'">min</label>'+
+      '<span class="mv"><button type="button" class="small" data-up="'+s.id+'" aria-label="Move '+s.name+' up"'+(i===0?' disabled':'')+'>↑</button>'+
+      '<button type="button" class="small" data-dn="'+s.id+'" aria-label="Move '+s.name+' down"'+(i===arr.length-1?' disabled':'')+'>↓</button></span></li>';
+  }).join('');
+  $('totalLine').textContent=t+' min · '+clockAt(0)+' to '+clockAt(t);
+}
+$('steps').addEventListener('change',e=>{
+  const d=e.target.dataset;
+  if(d.on){S.on[d.on]=e.target.checked;}
+  if(d.min){S.mins[d.min]=Math.min(90,Math.max(1,parseInt(e.target.value)||1));}
+  save();drawList();draw();
+});
+$('steps').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.go){const s=active().find(x=>x.id===d.go);if(s)enter(s,running);return;}
+  const id=d.up||d.dn;if(!id)return;
+  const i=S.order.indexOf(id),j=i+(d.up?-1:1);if(j<0||j>=S.order.length)return;
+  [S.order[i],S.order[j]]=[S.order[j],S.order[i]];save();drawList();draw();
+});
+$('resetBtn').onclick=()=>{S.order=DEF.map(s=>s.id);S.mins={};S.on={};save();drawList();draw();};
+
+/* ---------- alarm ---------- */
+let armed=false,target=0,ringTimer=null,ringN=0;
+function nextTarget(){
+  const [h,m]=S.alarm.split(':').map(Number),d=new Date();d.setHours(h,m,0,0);
+  if(d.getTime()<=Date.now())d.setDate(d.getDate()+1);return d.getTime();
+}
+function stopRing(){if(ringTimer){clearInterval(ringTimer);ringTimer=null;$('alarmPanel').classList.remove('ringing');$('beginBtn').hidden=true;drawAlarm();}}
+function ring(){
+  ringN=0;$('alarmPanel').classList.add('ringing');$('beginBtn').hidden=false;
+  const hit=()=>{ringN++;const g=Math.min(0.9,0.2+ringN*0.07);bell(528,4,g);setTimeout(()=>bell(660,4,g),450);};
+  hit();ringTimer=setInterval(hit,2600);drawAlarm();
+}
+function checkAlarm(){
+  if(armed&&!ringTimer&&Date.now()>=target){target=nextTarget();ring();}
+  else if(armed&&!ringTimer)drawAlarm();
+}
+function drawAlarm(){
+  $('armBtn').textContent=ringTimer?'Stop alarm':(armed?'Turn alarm off':'Set alarm');
+  if(ringTimer){$('alarmStatus').textContent='Good morning. Time for sadhana.';return;}
+  if(!armed){$('alarmStatus').textContent='Alarm is off.';return;}
+  const m=Math.max(0,Math.round((target-Date.now())/60000));
+  $('alarmStatus').textContent='Rings at '+clockAt(0)+', in '+Math.floor(m/60)+' h '+(m%60)+' min. Leave this page open.';
+}
+$('armBtn').onclick=()=>{
+  if(ringTimer){stopRing();return;}
+  armed=!armed;
+  if(armed){audio();keepAwake();target=nextTarget();bell(528,3,.3);}
+  drawAlarm();
+};
+$('beginBtn').onclick=()=>{stopRing();done=true;play();};
+$('alarmTime').onchange=e=>{if(e.target.value){S.alarm=e.target.value;save();if(armed)target=nextTarget();drawList();drawAlarm();}};
+
+/* ---------- controls ---------- */
+$('playBtn').onclick=()=>running?pause():play();
+$('nextBtn').onclick=()=>{audio();go(1);};
+$('prevBtn').onclick=()=>{audio();if(done){done=false;enter(active()[0],running);}else go(elapsed>5?0:-1);};
+$('plusBtn').onclick=()=>{extra+=60;draw();};
+$('voice').onchange=e=>{S.voice=e.target.checked;save();};
+$('vol').oninput=e=>{S.vol=+e.target.value;if(master)master.gain.value=S.vol;save();};
+$('testBtn').onclick=()=>{bell(528);droneOn(today().f);setTimeout(()=>{if(!(running&&curId==='med'))droneOff()},6000);};
+
+/* ---------- first paint ---------- */
+(function(){
+  const w=today(),now=new Date();
+  $('todayLine').textContent=now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})+' · today: '+w.c+', '+w.area;
+  $('week').innerHTML=[1,2,3,4,5,6,0].map(i=>{const d=WEEK[i];
+    return '<div class="day'+(i===now.getDay()?' today':'')+'"><span class="d">'+d.d+'</span><div><p><b>'+d.c+'</b> · '+d.area+'</p><small>'+d.t+' · mantra '+d.m+' · drone '+Math.round(d.f)+' Hz</small></div></div>';}).join('');
+  $('alarmTime').value=S.alarm;$('voice').checked=!!S.voice;$('vol').value=S.vol;
+  curId=(active()[0]||{}).id||null;
+  drawList();draw();drawAlarm();
+  lastT=performance.now();setInterval(loop,200);
+})();
+</script>
+</body>
+</html>
